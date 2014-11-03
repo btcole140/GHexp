@@ -1,4 +1,4 @@
-setwd("/Users/mac/Google Drive/R Datasets/GH Exp")
+setwd("/Users/mac/Google Drive/R Datasets/GH Exp") #note need to change user if working on diff computer
 GHexp  <- read.csv("GHexp 2013_fin.csv")
 
 #additional columns- NOTE: these columns are already attached to dataset
