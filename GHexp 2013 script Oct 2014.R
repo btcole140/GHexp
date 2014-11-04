@@ -1760,7 +1760,7 @@ ggplot(data=GHcgr, aes(x=DTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
         axis.text.y  = element_text(size=18, face="bold"))
 
 #********************
-##Response Variable: Cot.GR
+##Response Variable: TFC
 #boxplot
 ggplot(data=GHexp, aes(x=TRTMT, y=TFC))+
   geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
@@ -1894,3 +1894,176 @@ ggplot(data=GHtf, aes(x=DTRTMT, y=sqrtTFC, group=Zone, shape=Zone)) +
   scale_x_discrete(labels=c("High", "Low")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
+
+#********************
+##Response Variable: BR.T
+#boxplot
+ggplot(data=GHexp, aes(x=TRTMT, y=BR.T))+
+  geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
+  ylab("Lifetime fitness") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Salt:Low", "Fresh:High", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("1", "2"),
+                    labels=c("Beach", "Dune"),
+                    values=c("#FFFFFF", "#000000"))+
+  ggtitle("Total Branches by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#NOTE: clear differences between treatments
+ggplot(data=GHexp, aes(x=TRTMT, y=BR.T))+
+  geom_point(aes(shape=Zone), width=0.8, position="dodge")+ 
+  ylab("Lifetime fitness") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Salt:Low", "Fresh:High", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("1", "2"),
+                    labels=c("Beach", "Dune"),
+                    values=c("#FFFFFF", "#000000"))+
+  ggtitle("Total Branches by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#cannot remove outliers found below...this plot shows that points are fairly consolidated 
+
+GHbr <- summarySE(GHexp, measurevar="BR.T", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHbr, aes(x=DTRTMT, y=BR.T, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=BR.T-se, ymax=BR.T+se), width=0.1, position=position_dodge(0.1)) +
+  geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
+  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
+  scale_shape_discrete(name  ="Zone",
+                       breaks=c("1", "2"),
+                       labels=c("Beach", "Dune")) +
+  xlab("Density") + ylab("Total Branches") +
+  ggtitle("Mean Total Branches by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  scale_x_discrete(labels=c("High", "Low")) +
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+#distribution
+hist(GHexp$sqrtBR.T) #none are good
+
+#outliers
+mean(GHexp$BR.T, na.rm=TRUE)
+sd(GHexp$BR.T, na.rm=TRUE)
+1.95+(3*3.87) #=13.56, outliers = 25, 45, 57, 86, 112, 128, 143, 171
+mean(GHexp[-c(25, 45, 57, 86, 112, 128, 143, 171),]$BR.T, na.rm=TRUE)
+sd(GHexp[-c(25, 45, 57, 86, 112, 128, 143, 171),]$BR.T, na.rm=TRUE)
+1.41+(3*2.72) #=9.57, outliers = 9, 69, 56
+mean(GHexp[-c(9, 25, 45, 56, 57, 69, 86, 112, 128, 143, 171),]$BR.T, na.rm=TRUE)
+sd(GHexp[-c(9, 25, 45, 56, 57, 69, 86, 112, 128, 143, 171),]$BR.T, na.rm=TRUE)
+1.28+(3*2.49) #=8.75, outliers = 2, 22, 54, 58, 83, 92 Stop here 
+
+GHexpbrno1  <- GHexp[-c(25, 45, 57, 86, 112, 128, 143, 171),]
+GHexpbrno1$sqrtBR.T  <- sqrt(GHexpbrno1$BR.T+0.5)
+hist(GHexpbrno1$sqrtBR.T)
+GHexpbrno1$rankBR.T  <- rank(GHexpbrno1$BR.T)
+GHexpbrno3  <- GHexp[-c(2, 9, 22, 25, 45, 54, 56, 57, 58, 69, 83, 86, 92, 112, 128, 143, 171),]
+hist(GHexp$sqrtBR.T)
+GHexpbrno3$sqrtBR.T  <- sqrt(GHexpbrno3$BR.T+0.5)
+hist(GHexpbrno3$sqrtBR.T) #shape of distribution not changed, just fewer columns
+GHexpbrno3$rankBR.T  <- rank(GHexpbrno3$BR.T)
+#See above plot about deleting outliers...cannot do!!
+
+#Does replant have an effect
+lmbrR  <- lm(sqrtBR.T~Replant, data=GHexp)
+lmbrRx  <- lm(sqrtBR.T~1, data=GHexp)
+anova(lmbrRx, lmbrR) #Replant not significant p=0.703 F=0.35
+
+#lmer vs lm
+lmebr <- lmer(sqrtBR.T~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
+lmbr <- lm(sqrtBR.T~Zone*DTRTMT*SSTRTMT, data=GHexp)
+x <- -2*logLik(lmtf, REML=T) +2*logLik(lmetf, REML=T)
+x
+pchisq(x, df=2, lower.tail=F)
+AIC(lmbr) #566.38
+AIC(lmebr) #582.73
+#sqrt: logLik=0, p=1, random Site not sig
+
+#check assumptions of best model
+lmbrR <- resid(lmbr) 
+lmbrF <- fitted(lmbr)
+plot(lmbrF, lmbrR) #lm: sqrt is good
+abline(h=0, col=c("red"))
+hist(lmbrR) #lm: sqrt good
+qqnorm(lmbrR, main="Q-Q plot for residuals") 
+qqline(lmbrR) #lm: none are good... go with sqrt
+
+#lm
+lmbr <- lm(sqrtBR.T~Zone*DTRTMT*SSTRTMT, data=GHexp)
+lmbrb  <- update(lmbr,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmbrb, lmbr) #no3: 3way not sig p=0.79 f=0.0708
+  #all: 3way not sig p=0.934 f=0.0069
+lmbrc  <- update(lmbrb,~.-Zone:DTRTMT)
+anova(lmbrc, lmbrb) #no3: Zone:D not sig p=0.12 f=2.45
+  #all: Zone:D not sig p=0.945 f=0.0047
+lmbrd  <- update(lmbrb,~.-Zone:SSTRTMT)
+anova(lmbrd, lmbrb) #no3: Zone:SS is sig p=0.045 f=4.071
+  #all: Zone:SS not sig p=0.114 f=2.52
+lmbre  <- update(lmbrb,~.-DTRTMT:SSTRTMT)
+anova(lmbre, lmbrb) #no3: D:SS not sig p=0.0019 f=9.86
+  #all:D:SS is sig p=0.0001 f=14.83
+lmbr2 <- lm(sqrtBR.T~Zone+DTRTMT*SSTRTMT, data=GHexp)
+lmbr2b  <- update(lmbr2,~.-Zone)
+anova(lmbr2b, lmbr2) #no3: Zone is not sig p=0.677 f=0.174
+  #all: Zone is marginally non sig p=0.086 f=2.97
+#lmbr3 <- lm(sqrtBR.T~Zone*SSTRTMT+DTRTMT, data=GHexpbrno3)
+#lmbr3b  <- update(lmbr3,~.-DTRTMT)
+#anova(lmbr3b, lmbr3) #D is not sig p=0.122 f=2.41
+lmbr4 <- lm(sqrtBR.T~Zone+SSTRTMT+DTRTMT, data=GHexp)
+lmbr4b  <- update(lmbr4,~.-SSTRTMT)
+anova(lmbr4b, lmbr4) #SS is sig p=<0.0001 f=30.56
+lmbr4c  <- update(lmbr4,~.-DTRTMT)
+anova(lmbr4c, lmbr4) #D not sig p=0.15 f=2.069
+#lmbrF <- lm(sqrtBR.T~Zone:SSTRTMT+DTRTMT:SSTRTMT+Zone+DTRTMT+SSTRTMT, data=GHexp)
+#summary(lmbrF)
+lmbrF <- lm(sqrtBR.T~DTRTMT*SSTRTMT, data=GHexp)
+summary(lmbrF)
+
+#check assumptions of best model
+lmbrFR <- resid(lmbrF) 
+lmbrFF <- fitted(lmbrF)
+plot(lmbrFF, lmbrFR) #lm: sqrt is best, one group has less resid variation
+abline(h=0, col=c("red"))
+hist(lmbrFR) #lm: sqrt best, skew left
+qqnorm(lmbrFR, main="Q-Q plot for residuals") 
+qqline(lmbrFR) #lm: none are good... go with sqrt, long right tail and stepwise pattern
+
+
+GHbr <- summarySE(GHexp, measurevar="sqrtBR.T", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHbr, aes(x=DTRTMT, y=sqrtBR.T, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=sqrtBR.T-se, ymax=sqrtBR.T+se), width=0.1, position=position_dodge(0.1)) +
+  geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
+  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
+  scale_shape_discrete(name  ="Zone",
+                       breaks=c("1", "2"),
+                       labels=c("Beach", "Dune")) +
+  xlab("Density") + ylab(expression(bold(sqrt(Total~Branches)))) +
+  ggtitle("Mean sqrt Total Branches by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  scale_x_discrete(labels=c("High", "Low")) +
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
