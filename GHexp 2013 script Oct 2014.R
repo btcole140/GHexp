@@ -663,6 +663,92 @@ GHexpRM2$logBR.T  <- log10(GHexpRM2$BR.T+1)
 GHexpRM2$sqrtBR.T  <- sqrt(GHexpRM2$BR.T+0.5)
 GHexpRM2$rankBR.T  <- rank(GHexpRM2$BR.T, na.last="keep")
 
+##Chl.mean
+#ALL
+GHexp$logChl.mean  <- log10(GHexp$Chl.mean+1)
+GHexp$sqrtChl.mean <- sqrt(GHexp$Chl.mean+0.5)
+GHexp$rankChl.mean  <- rank(GHexp$Chl.mean, na.last="keep")
+#R0
+GHexpR0$logChl.mean  <- log10(GHexpR0$Chl.mean+1)
+GHexpR0$sqrtChl.mean  <- sqrt(GHexpR0$Chl.mean+0.5)
+GHexpR0$rankChl.mean  <- rank(GHexpR0$Chl.mean, na.last="keep")
+#R
+GHexpR$logChl.mean  <- log10(GHexpR$Chl.mean+1)
+GHexpR$sqrtChl.mean <- sqrt(GHexpR$Chl.mean+0.5)
+GHexpR$rankChl.mean <- rank(GHexpR$Chl.mean, na.last="keep")
+#D
+GHexpD$logChl.mean  <- log10(GHexpD$Chl.mean+1)
+GHexpD$sqrtChl.mean <- sqrt(GHexpD$Chl.mean+0.5)
+GHexpD$rankChl.mean <- rank(GHexpD$Chl.mean, na.last="keep")
+#D1
+GHexpD1$logChl.mean  <- log10(GHexpD1$Chl.mean+1)
+GHexpD1$sqrtChl.mean  <- sqrt(GHexpD1$Chl.mean+0.5)
+GHexpD1$rankChl.mean  <- rank(GHexpD1$Chl.mean, na.last="keep")
+#D2
+GHexpD2$logChl.mean  <- log10(GHexpD2$Chl.mean+1)
+GHexpD2$sqrtChl.mean  <- sqrt(GHexpD2$Chl.mean+0.5)
+GHexpD2$rankChl.mean  <- rank(GHexpD2$Chl.mean, na.last="keep")
+#R0D
+GHexpR0D$logChl.mean  <- log10(GHexpR0D$Chl.mean+1)
+GHexpR0D$sqrtChl.mean  <- sqrt(GHexpR0D$Chl.mean+0.5)
+GHexpR0D$rankChl.mean <- rank(GHexpR0D$Chl.mean, na.last="keep")
+#R0D1
+GHexpR0D1$logChl.mean  <- log10(GHexpR0D1$Chl.mean+1)
+GHexpR0D1$sqrtChl.mean  <- sqrt(GHexpR0D1$Chl.mean+0.5)
+GHexpR0D1$rankChl.mean  <- rank(GHexpR0D1$Chl.mean, na.last="keep")
+#R0D2
+GHexpR0D2$logChl.mean  <- log10(GHexpR0D2$Chl.mean+1)
+GHexpR0D2$sqrtChl.mean  <- sqrt(GHexpR0D2$Chl.mean+0.5)
+GHexpR0D2$rankChl.mean  <- rank(GHexpR0D2$Chl.mean, na.last="keep")
+#RD
+GHexpRD$logChl.mean  <- log10(GHexpRD$Chl.mean+1)
+GHexpRD$sqrtChl.mean  <- sqrt(GHexpRD$Chl.mean+0.5)
+GHexpRD$rankChl.mean  <- rank(GHexpRD$Chl.mean, na.last="keep")
+#RD1
+GHexpRD1$logChl.mean  <- log10(GHexpRD1$Chl.mean+1)
+GHexpRD1$sqrtChl.mean  <- sqrt(GHexpRD1$Chl.mean+0.5)
+GHexpRD1$rankChl.mean  <- rank(GHexpRD1$Chl.mean, na.last="keep")
+#RD2
+GHexpRD2$logChl.mean  <- log10(GHexpRD2$Chl.mean+1)
+GHexpRD2$sqrtChl.mean  <- sqrt(GHexpRD2$Chl.mean+0.5)
+GHexpRD2$rankChl.mean <- rank(GHexpRD2$Chl.mean, na.last="keep")
+#M
+GHexpM$logChl.mean <- log10(GHexpM$Chl.mean+1)
+GHexpM$sqrtChl.mean  <- sqrt(GHexpM$Chl.mean+0.5)
+GHexpM$rankChl.mean  <- rank(GHexpM$Chl.mean, na.last="keep")
+#M1
+GHexpM1$logChl.mean  <- log10(GHexpM1$Chl.mean+1)
+GHexpM1$sqrtChl.mean  <- sqrt(GHexpM1$Chl.mean+0.5)
+GHexpM1$rankChl.mean  <- rank(GHexpM1$Chl.mean, na.last="keep")
+#M2
+GHexpM2$logChl.mean  <- log10(GHexpM2$Chl.mean+1)
+GHexpM2$sqrtChl.mean  <- sqrt(GHexpM2$Chl.mean+0.5)
+GHexpM2$rankChl.mean  <- rank(GHexpM2$Chl.mean, na.last="keep")
+#R0M
+GHexpR0M$logChl.mean  <- log10(GHexpR0M$Chl.mean+1)
+GHexpR0M$sqrtChl.mean  <- sqrt(GHexpR0M$Chl.mean+0.5)
+GHexpR0M$rankChl.mean  <- rank(GHexpR0M$Chl.mean, na.last="keep")
+#R0M1
+GHexpR0M1$logChl.mean  <- log10(GHexpR0M1$Chl.mean+1)
+GHexpR0M1$sqrtChl.mean  <- sqrt(GHexpR0M1$Chl.mean+0.5)
+GHexpR0M1$rankChl.mean  <- rank(GHexpR0M1$Chl.mean, na.last="keep")
+#R0M2
+GHexpR0M2$logChl.mean  <- log10(GHexpR0M2$Chl.mean+1)
+GHexpR0M2$sqrtChl.mean  <- sqrt(GHexpR0M2$Chl.mean+0.5)
+GHexpR0M2$rankChl.mean  <- rank(GHexpR0M2$Chl.mean, na.last="keep")
+#RM
+GHexpRM$logChl.mean <- log10(GHexpRM$Chl.mean+1)
+GHexpRM$sqrtChl.mean  <- sqrt(GHexpRM$Chl.mean+0.5)
+GHexpRM$rankChl.mean  <- rank(GHexpRM$Chl.mean, na.last="keep")
+#RM1
+GHexpRM1$logChl.mean  <- log10(GHexpRM1$Chl.mean+1)
+GHexpRM1$sqrtChl.mean  <- sqrt(GHexpRM1$Chl.mean+0.5)
+GHexpRM1$rankChl.mean  <- rank(GHexpRM1$Chl.mean, na.last="keep")
+#RM2
+GHexpRM2$logChl.mean  <- log10(GHexpRM2$Chl.mean+1)
+GHexpRM2$sqrtChl.mean  <- sqrt(GHexpRM2$Chl.mean+0.5)
+GHexpRM2$rankChl.mean  <- rank(GHexpRM2$Chl.mean, na.last="keep")
+
 ##Chl.Diff
 #ALL
 GHexp$logChl.Diff  <- log10(GHexp$Chl.Diff+100)
@@ -2066,6 +2152,110 @@ ggplot(data=GHbr, aes(x=DTRTMT, y=sqrtBR.T, group=Zone, shape=Zone)) +
   scale_x_discrete(labels=c("High", "Low")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
+
+
+#********************
+##Response Variable: Chl.mean
+#boxplot
+ggplot(data=GHexp, aes(x=TRTMT, y=Chl.mean))+
+  geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
+  ylab("Mean Chlorophyll") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("1", "2"),
+                    labels=c("Beach", "Dune"),
+                    values=c("#FFFFFF", "#000000"))+
+  ggtitle("Mean Chlorophyll by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#NOTE: possible differences between treatments
+
+ggplot(data=GHexp, aes(x=TRTMT, y=Chl.mean))+
+  geom_point(aes(shape=Zone), width=0.8, position="dodge")+ 
+  ylab("Mean Chlorophyll") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("1", "2"),
+                    labels=c("Beach", "Dune"),
+                    values=c("#FFFFFF", "#000000"))+
+  ggtitle("Mean Chlorophyll by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#no outliers
+
+GHchlm <- summarySE(GHexp, measurevar="Chl.mean", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHchlm, aes(x=DTRTMT, y=Chl.mean, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=Chl.mean-se, ymax=Chl.mean+se), width=0.1, position=position_dodge(0.1)) +
+  geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
+  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
+  scale_shape_discrete(name  ="Zone",
+                       breaks=c("1", "2"),
+                       labels=c("Beach", "Dune")) +
+  xlab("Density") + ylab("Mean Chlorophyll") +
+  ggtitle("Mean Mean Chlorophyll by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  scale_x_discrete(labels=c("High", "Low")) +
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+
+#outliers
+mean(GHexp$Chl.mean, na.rm=TRUE)
+sd(GHexp$Chl.mean, na.rm=TRUE)
+-0.132+(3*1.543) #=4.497, -4.761 outliers = 181...
+
+#distribution
+GHexpsdno1  <- GHexp[-c(181),]
+GHexpsdno1$logStemD.Diff  <- log10(GHexpsdno1$StemD.Diff+10)
+GHexpsdno1$sqrtStemD.Diff  <- sqrt(GHexpsdno1$StemD.Diff+10.5)
+GHexpsdno1$rankStemD.Diff  <- rank(GHexpsdno1$StemD.Diff)
+hist(GHexpsdno1$StemD.Diff) #raw okay
+hist(GHexp$StemD.Diff) #removing outlier is much better distribution
+
+
+#Does replant have an effect
+lmsdR  <- lm(rankStemD.Diff~Replant, data=GHexpsdno1)
+lmsdRx  <- lm(rankStemD.Diff~1, data=GHexpsdno1)
+anova(lmsdRx, lmsdR) #Replant not significant p=0.456 F=0.79
+
+#lmer vs lm
+lmesd <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpsdno1)
+lmsd <- lm(rankStemD.Diff~Zone*DTRTMT*SSTRTMT, data=GHexpsdno1)
+x <- -2*logLik(lmsd, REML=T) +2*logLik(lmesd, REML=T)
+x
+pchisq(x, df=2, lower.tail=F)
+AIC(lmsd) #2471.66
+AIC(lmesd) #2411.54
+#sqrt: logLik=8.24, p=0.016, random Site is sig
+
+#check assumptions of best model
+lmesdR <- resid(lmesd) 
+lmesdF <- fitted(lmesd)
+plot(lmesdF, lmesdR) #lme: raw is good, rank is best
+abline(h=0, col=c("red"))
+hist(lmesdR) #lme: raw is good, but rank is best
+qqnorm(lmesdR, main="Q-Q plot for residuals") 
+qqline(lmesdR) #lme: rank is best
+
+
 
 
 #********************
