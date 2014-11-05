@@ -1157,7 +1157,7 @@ ggplot(data=GHexp, aes(x=TRTMT, y=DDFLWF))+
   geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
   ylab("Flowering Duration (days)") +
   scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
-                   labels=c("Fresh:Low", "Salt:Low", "Fresh:High", "Salt:High"))+
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
   scale_fill_manual(name="Zone",
                       breaks=c("1", "2"),
                       labels=c("Beach", "Dune"),
@@ -1371,7 +1371,7 @@ ggplot(data=GHexp, aes(x=TRTMT, y=NewL.D))+
   geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
   ylab("Production of New Leaves \n(leaves/day)") +
   scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
-                   labels=c("Fresh:Low", "Salt:Low", "Fresh:High", "Salt:High"))+
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
   scale_fill_manual(name="Zone",
                     breaks=c("1", "2"),
                     labels=c("Beach", "Dune"),
@@ -1513,7 +1513,7 @@ ggplot(data=GHexp, aes(x=TRTMT, y=Cot.FR))+
   geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
   ylab("Stem Length (cm)") +
   scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
-                   labels=c("Fresh:Low", "Salt:Low", "Fresh:High", "Salt:High"))+
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
   scale_fill_manual(name="Zone",
                     breaks=c("1", "2"),
                     labels=c("Beach", "Dune"),
@@ -1639,7 +1639,7 @@ ggplot(data=GHexp, aes(x=TRTMT, y=Cot.GR))+
   geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
   ylab("Stem Growth Rate (cm/day)") +
   scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
-                   labels=c("Fresh:Low", "Salt:Low", "Fresh:High", "Salt:High"))+
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
   scale_fill_manual(name="Zone",
                     breaks=c("1", "2"),
                     labels=c("Beach", "Dune"),
@@ -1766,7 +1766,7 @@ ggplot(data=GHexp, aes(x=TRTMT, y=TFC))+
   geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
   ylab("Lifetime fitness") +
   scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
-                   labels=c("Fresh:Low", "Salt:Low", "Fresh:High", "Salt:High"))+
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
   scale_fill_manual(name="Zone",
                     breaks=c("1", "2"),
                     labels=c("Beach", "Dune"),
@@ -1902,7 +1902,7 @@ ggplot(data=GHexp, aes(x=TRTMT, y=BR.T))+
   geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
   ylab("Lifetime fitness") +
   scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
-                   labels=c("Fresh:Low", "Salt:Low", "Fresh:High", "Salt:High"))+
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
   scale_fill_manual(name="Zone",
                     breaks=c("1", "2"),
                     labels=c("Beach", "Dune"),
@@ -1920,7 +1920,7 @@ ggplot(data=GHexp, aes(x=TRTMT, y=BR.T))+
   geom_point(aes(shape=Zone), width=0.8, position="dodge")+ 
   ylab("Lifetime fitness") +
   scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
-                   labels=c("Fresh:Low", "Salt:Low", "Fresh:High", "Salt:High"))+
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
   scale_fill_manual(name="Zone",
                     breaks=c("1", "2"),
                     labels=c("Beach", "Dune"),
@@ -1989,12 +1989,12 @@ anova(lmbrRx, lmbrR) #Replant not significant p=0.703 F=0.35
 #lmer vs lm
 lmebr <- lmer(sqrtBR.T~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 lmbr <- lm(sqrtBR.T~Zone*DTRTMT*SSTRTMT, data=GHexp)
-x <- -2*logLik(lmtf, REML=T) +2*logLik(lmetf, REML=T)
+x <- -2*logLik(lmbr, REML=T) +2*logLik(lmebr, REML=T)
 x
 pchisq(x, df=2, lower.tail=F)
 AIC(lmbr) #566.38
 AIC(lmebr) #582.73
-#sqrt: logLik=0, p=1, random Site not sig
+#sqrt: logLik=0.23, p=0.89, random Site not sig
 
 #check assumptions of best model
 lmbrR <- resid(lmbr) 
@@ -2066,4 +2066,589 @@ ggplot(data=GHbr, aes(x=DTRTMT, y=sqrtBR.T, group=Zone, shape=Zone)) +
   scale_x_discrete(labels=c("High", "Low")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
+
+
+#********************
+##Response Variable: StemD.Diff
+#boxplot
+ggplot(data=GHexpsdno1, aes(x=TRTMT, y=StemD.Diff))+
+  geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
+  ylab("Change in Stem Diameter (cm)") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("1", "2"),
+                    labels=c("Beach", "Dune"),
+                    values=c("#FFFFFF", "#000000"))+
+  ggtitle("Stem Diameter Diff. by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#NOTE: clear differences between treatments
+ggplot(data=GHexpsdno1, aes(x=TRTMT, y=StemD.Diff))+
+  geom_point(aes(shape=Zone), width=0.8, position="dodge")+ 
+  ylab("Change in Stem Diameter (cm)") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("1", "2"),
+                    labels=c("Beach", "Dune"),
+                    values=c("#FFFFFF", "#000000"))+
+  ggtitle("Stem Diameter Diff. by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#remove one outlier
+
+GHsd <- summarySE(GHexpsdno1, measurevar="StemD.Diff", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHsd, aes(x=DTRTMT, y=StemD.Diff, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=StemD.Diff-se, ymax=StemD.Diff+se), width=0.1, position=position_dodge(0.1)) +
+  geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
+  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
+  scale_shape_discrete(name  ="Zone",
+                       breaks=c("1", "2"),
+                       labels=c("Beach", "Dune")) +
+  xlab("Density") + ylab("Change in Stem Diameter (cm)") +
+  ggtitle("Mean Stem Diameter Diff. by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  scale_x_discrete(labels=c("High", "Low")) +
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+
+#outliers
+mean(GHexp$StemD.Diff, na.rm=TRUE)
+sd(GHexp$StemD.Diff, na.rm=TRUE)
+-0.132+(3*1.543) #=4.497, -4.761 outliers = 181...
+
+#distribution
+GHexpsdno1  <- GHexp[-c(181),]
+GHexpsdno1$logStemD.Diff  <- log10(GHexpsdno1$StemD.Diff+10)
+GHexpsdno1$sqrtStemD.Diff  <- sqrt(GHexpsdno1$StemD.Diff+10.5)
+GHexpsdno1$rankStemD.Diff  <- rank(GHexpsdno1$StemD.Diff)
+hist(GHexpsdno1$StemD.Diff) #raw okay
+hist(GHexp$StemD.Diff) #removing outlier is much better distribution
+
+
+#Does replant have an effect
+lmsdR  <- lm(rankStemD.Diff~Replant, data=GHexpsdno1)
+lmsdRx  <- lm(rankStemD.Diff~1, data=GHexpsdno1)
+anova(lmsdRx, lmsdR) #Replant not significant p=0.456 F=0.79
+
+#lmer vs lm
+lmesd <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpsdno1)
+lmsd <- lm(rankStemD.Diff~Zone*DTRTMT*SSTRTMT, data=GHexpsdno1)
+x <- -2*logLik(lmsd, REML=T) +2*logLik(lmesd, REML=T)
+x
+pchisq(x, df=2, lower.tail=F)
+AIC(lmsd) #2471.66
+AIC(lmesd) #2411.54
+#sqrt: logLik=8.24, p=0.016, random Site is sig
+
+#check assumptions of best model
+lmesdR <- resid(lmesd) 
+lmesdF <- fitted(lmesd)
+plot(lmesdF, lmesdR) #lme: raw is good, rank is best
+abline(h=0, col=c("red"))
+hist(lmesdR) #lme: raw is good, but rank is best
+qqnorm(lmesdR, main="Q-Q plot for residuals") 
+qqline(lmesdR) #lme: rank is best
+
+#lmer
+lmesd <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpsdno1)
+lmesd2 <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1+Zone|Site), data=GHexpsdno1)
+anova(lmesd2, lmesd) #Random I is best p=0.998 chisq=0.003
+lmesdb  <- update(lmesd,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmesdb, lmesd) #3way not sig p=0.51 chisq=0.43
+lmesdc  <- update(lmesdb,~.-Zone:DTRTMT)
+anova(lmesdc, lmesdb) #Zone:D not sig p=0.33 chisq=0.93
+lmesdd  <- update(lmesdb,~.-Zone:SSTRTMT)
+anova(lmesdd, lmesdb) #Zone:SS not sig p=0.76 chisq=0.0901
+lmesde  <- update(lmesdb,~.-DTRTMT:SSTRTMT)
+anova(lmesde, lmesdb) #D:SS not sig p=0.21 chisq=1.54
+lmesd3 <- lmer(rankStemD.Diff~Zone+DTRTMT+SSTRTMT+(1|Site), data=GHexpsdno1)
+lmesd3b  <- update(lmesd3,~.-Zone)
+anova(lmesd3b, lmesd3) #Zone not sig p-0.608 chisq=0.26
+lmesd3c  <- update(lmesd3,~.-DTRTMT)
+anova(lmesd3c, lmesd3) #D is sig p=0.0179 chisq=5.609
+lmesd3d  <- update(lmesd3,~.-SSTRTMT)
+anova(lmesd3d, lmesd3) #SS is sig p=<0.0001 chisq=29.76
+lmesdF <- lmer(rankStemD.Diff~DTRTMT+SSTRTMT+(1|Site), data=GHexpsdno1)
+summary(lmesdF)
+#random: site var=338.4, resid=3440.7
+#fixed: intercept=96.87, d est= -19.40, ss est=44.086
+
+#check assumptions of best model
+lmesdFR <- resid(lmesdF) 
+lmesdFF <- fitted(lmesdF)
+plot(lmesdFF, lmesdFR) #lme: good
+abline(h=0, col=c("red"))
+hist(lmesdFR) #lme: good
+qqnorm(lmesdFR, main="Q-Q plot for residuals") 
+qqline(lmesdFR) #lme: good
+
+
+GHsd <- summarySE(GHexpsdno1, measurevar="rankStemD.Diff", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHsd, aes(x=DTRTMT, y=rankStemD.Diff, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=rankStemD.Diff-se, ymax=rankStemD.Diff+se), width=0.1, position=position_dodge(0.1)) +
+  geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
+  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
+  scale_shape_discrete(name  ="Zone",
+                       breaks=c("1", "2"),
+                       labels=c("Beach", "Dune")) +
+  xlab("Density") + ylab("Ranked Change in \nStem Diameter (cm)") +
+  ggtitle("Mean Stem Diameter Diff. by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  scale_x_discrete(labels=c("High", "Low")) +
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+
+#********************
+##Response Variable: Node.F
+#boxplot
+ggplot(data=GHexp, aes(x=TRTMT, y=Node.F))+
+  geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
+  ylab("Total Stem Nodes") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("1", "2"),
+                    labels=c("Beach", "Dune"),
+                    values=c("#FFFFFF", "#000000"))+
+  ggtitle("Total Stem Nodes by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#NOTE: not much differences between treatments or zones
+ggplot(data=GHexp, aes(x=TRTMT, y=Node.F))+
+  geom_point(aes(shape=Zone), width=0.8, position="dodge")+ 
+  ylab("Total Stem Nodes") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("1", "2"),
+                    labels=c("Beach", "Dune"),
+                    values=c("#FFFFFF", "#000000"))+
+  ggtitle("Total Stem Nodes by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#cannot remove outliers found below...this plot shows that points are fairly consolidated 
+
+GHnf <- summarySE(GHexp, measurevar="Node.F", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHnf, aes(x=DTRTMT, y=Node.F, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=Node.F-se, ymax=Node.F+se), width=0.1, position=position_dodge(0.1)) +
+  geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
+  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
+  scale_shape_discrete(name  ="Zone",
+                       breaks=c("1", "2"),
+                       labels=c("Beach", "Dune")) +
+  xlab("Density") + ylab("Total Stem Nodes") +
+  ggtitle("Mean Total Stem Nodes by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  scale_x_discrete(labels=c("High", "Low")) +
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+#distribution
+hist(GHexp$Node.F) #raw is great!
+
+#outliers
+mean(GHexp$Node.F, na.rm=TRUE)
+sd(GHexp$Node.F, na.rm=TRUE)
+8.42+(3*1.92) #=14.18, outliers = none
+
+#Does replant have an effect
+lmnfR  <- lm(Node.F~Replant, data=GHexp)
+lmnfRx  <- lm(Node.F~1, data=GHexp)
+anova(lmnfRx, lmnfR) #Replant is significant p=0.036 F=3.39
+
+#lmer vs lm
+lmenf <- lmer(Node.F~Zone*DTRTMT*SSTRTMT+Replant+(1|Site), data=GHexp)
+lmnf <- lm(Node.F~Zone*DTRTMT*SSTRTMT+Replant, data=GHexp)
+x <- -2*logLik(lmnf, REML=T) +2*logLik(lmenf, REML=T)
+x
+pchisq(x, df=2, lower.tail=F)
+AIC(lmnf) #734.38
+AIC(lmenf) #734.12
+#sqrt: logLik=0.679, p=0.71, random Site not sig
+
+#check assumptions of best model
+lmnfR <- resid(lmnf) 
+lmnfF <- fitted(lmnf)
+plot(lmnfF, lmnfR) #lm: raw is good
+abline(h=0, col=c("red"))
+hist(lmnfR) #lm: raw great
+qqnorm(lmnfR, main="Q-Q plot for residuals") 
+qqline(lmnfR) #lm: raw great
+
+#lm
+lmnf <- lm(Node.F~Zone*DTRTMT*SSTRTMT+Replant, data=GHexp)
+lmnfb  <- update(lmnf,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmnfb, lmnf) #3way not sig p=0.34 f=0.90
+lmnfc  <- update(lmnfb,~.-Zone:DTRTMT)
+anova(lmnfc, lmnfb) #Zone:D not sig p=0.33 f=0.94
+lmnfd  <- update(lmnfb,~.-Zone:SSTRTMT)
+anova(lmnfd, lmnfb) #Zone:SS not sig p=0.77 f=0.082
+lmnfe  <- update(lmnfb,~.-DTRTMT:SSTRTMT)
+anova(lmnfe, lmnfb) #D:SS not sig p=0.47 f=0.51
+lmnf2 <- lm(Node.F~Zone+DTRTMT+SSTRTMT+Replant, data=GHexp)
+lmnf2b  <- update(lmnf2,~.-Zone)
+anova(lmnf2b, lmnf2) #Zone is sig p=0.016 f=5.96
+lmnf2c  <- update(lmnf2,~.-DTRTMT)
+anova(lmnf2c, lmnf2) #D marginally non sig p=0.064 f=3.46
+lmnf2d  <- update(lmnf2,~.-SSTRTMT)
+anova(lmnf2d, lmnf2) #SS not sig p=0.16 f=1.99
+lmnf2e  <- update(lmnf2,~.-Replant)
+anova(lmnf2e, lmnf2) #Replant marginally non sig p=0.059 f=2.87
+lmnfF <- lm(Node.F~Zone, data=GHexp)
+summary(lmnfF)
+#fixed: intercept=8.73, zone est= -0.646
+#R^2=0.023, p=0.025, f=5.13 [1, 175]
+
+#check assumptions of best model
+lmnfFR <- resid(lmnfF) 
+lmnfFF <- fitted(lmnfF)
+plot(lmnfFF, lmnfFR) #lm: raw is good
+abline(h=0, col=c("red"))
+hist(lmnfFR) #lm: raw great
+qqnorm(lmnfFR, main="Q-Q plot for residuals") 
+qqline(lmnfFR) #lm: raw good
+
+GHnf <- summarySE(GHexp, measurevar="Node.F", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHnf, aes(x=DTRTMT, y=Node.F, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=Node.F-se, ymax=Node.F+se), width=0.1, position=position_dodge(0.1)) +
+  geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
+  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
+  scale_shape_discrete(name  ="Zone",
+                       breaks=c("1", "2"),
+                       labels=c("Beach", "Dune")) +
+  xlab("Density") + ylab("Total Stem Nodes") +
+  ggtitle("Mean Total Stem Nodes by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  scale_x_discrete(labels=c("High", "Low")) +
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+
+
+#********************
+##Response Variable: WatC
+#boxplot
+ggplot(data=GHexpwcno1, aes(x=TRTMT, y=WatC))+
+  geom_boxplot(aes(fill=Site.Zone), width=0.8, position="dodge")+ 
+  ylab("Water Content (%)") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("D.1", "D.2", "M.1", "M.2"),
+                    labels=c("Darnley Beach", "Darnley Dune", "Martinique Beach", "Martinique Dune"),
+                    values=c("#FFFFFF", "#666666", "#CCCCCC", "#000000"))+
+  ggtitle("Water Content by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#NOTE: not much differences between treatments or zones
+ggplot(data=GHexp, aes(x=TRTMT, y=WatC))+
+  geom_point(aes(shape=Zone), width=0.8, position="dodge")+ 
+  ylab("Water Content") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("1", "2"),
+                    labels=c("Beach", "Dune"),
+                    values=c("#FFFFFF", "#000000"))+
+  ggtitle("Water Content by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#one outlier to be removed
+
+GHwc <- summarySE(GHexp, measurevar="WatC", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHwc, aes(x=DTRTMT, y=WatC, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=WatC-se, ymax=WatC+se), width=0.1, position=position_dodge(0.1)) +
+  geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
+  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
+  scale_shape_discrete(name  ="Zone",
+                       breaks=c("1", "2"),
+                       labels=c("Beach", "Dune")) +
+  xlab("Density") + ylab("Water Content (%)") +
+  ggtitle("Mean Water Content by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  scale_x_discrete(labels=c("High", "Low")) +
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+#distribution
+hist(GHexp$WatC) #raw is best, skew left... outlier to remove
+
+#outliers
+mean(GHexp$WatC, na.rm=TRUE)
+sd(GHexp$WatC, na.rm=TRUE)
+0.165+(3*0.0986) #=0.4608, outliers = 73, 181
+
+GHexpwcno1  <- GHexp[-c(181),]
+GHexpwcno1$logWatC  <- log10(GHexpwcno1$WatC+1)
+GHexpwcno1$sqrtWatC  <- sqrt(GHexpwcno1$WatC+0.5)
+GHexpwcno1$rankWatC  <- rank(GHexpwcno1$WatC, na.last="keep")
+hist(GHexp$WatC)
+hist(GHexpwcno1$WatC) #log not much better than raw
+
+#Does replant have an effect
+lmwcR  <- lm(WatC~Replant, data=GHexpwcno1)
+lmwcRx  <- lm(WatC~1, data=GHexpwcno1)
+anova(lmwcRx, lmwcR) #Replant not significant p=0.492 F=0.71
+
+#lmer vs lm
+lmewc <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpwcno1)
+lmwc <- lm(WatC~Zone*DTRTMT*SSTRTMT, data=GHexpwcno1)
+x <- -2*logLik(lmwc, REML=T) +2*logLik(lmewc, REML=T)
+x
+pchisq(x, df=2, lower.tail=F)
+AIC(lmwc) #-613.62
+AIC(lmewc) #-575.81
+#sqrt: logLik=22.28, p=<0.0001, random Site is sig
+
+#check assumptions of best model
+lmewcR <- resid(lmewc) 
+lmewcF <- fitted(lmewc)
+plot(lmewcF, lmewcR) #lm: raw is good
+abline(h=0, col=c("red"))
+hist(lmewcR) #lm: raw good
+qqnorm(lmewcR, main="Q-Q plot for residuals") 
+qqline(lmewcR) #lm: transform does not change plot..raw is best
+
+#lmer
+lmewc <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpwcno1)
+lmewc2 <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1+Zone|Site), data=GHexpwcno1)
+anova(lmewc2, lmewc) #random I is best, p=0.87 chisq=0.27
+lmewcb  <- update(lmewc,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmewcb, lmewc) #3way not sig p=0.39 chisq=0.75
+lmewcc  <- update(lmewcb,~.-Zone:DTRTMT)
+anova(lmewcc, lmewcb) #Zone:D not sig p=0.16 chisq=1.94
+lmewcd  <- update(lmewcb,~.-Zone:SSTRTMT)
+anova(lmewcd, lmewcb) #Zone:SS not sig p=0.56 chisq=0.33
+lmewce  <- update(lmewcb,~.-DTRTMT:SSTRTMT)
+anova(lmewce, lmewcb) #3way not sig p=0.98 chisq=0.0008
+lmewc2 <- lmer(WatC~Zone+DTRTMT+SSTRTMT+(1|Site), data=GHexpwcno1)
+lmewc2b  <- update(lmewc2,~.-Zone)
+anova(lmewc2b, lmewc2) #Zone not sig p=0.22 chisq=1.48
+lmewc2c  <- update(lmewc2,~.-DTRTMT)
+anova(lmewc2c, lmewc2) #D not sig p=0.89 chisq=0.018
+lmewc2d  <- update(lmewc2,~.-SSTRTMT)
+anova(lmewc2d, lmewc2) #SS is sig p=<0.0001 chisq=35.091
+lmewcF <- lmer(WatC~SSTRTMT+(1|Site), data=GHexpwcno1)
+summary(lmewcF)
+#random: site var=0.00069, resid=0.0025
+#fixed: intercept=0.182, SS est= -0.043
+
+
+GHwc <- summarySE(GHexp, measurevar="WatC", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHwc, aes(x=DTRTMT, y=WatC, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=WatC-se, ymax=WatC+se), width=0.1, position=position_dodge(0.1)) +
+  geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
+  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
+  scale_shape_discrete(name  ="Zone",
+                       breaks=c("1", "2"),
+                       labels=c("Beach", "Dune")) +
+  xlab("Density") + ylab("Water Content (%)") +
+  ggtitle("Mean Water Content by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  scale_x_discrete(labels=c("High", "Low")) +
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+
+#********************
+##Response Variable: PrpnPD
+#boxplot
+ggplot(data=GHexpwcno1, aes(x=TRTMT, y=PrpnPD))+
+  geom_boxplot(aes(fill=Site.Zone), width=0.8, position="dodge")+ 
+  ylab("Seed Ratio (Proximal:Distal)") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("D.1", "D.2", "M.1", "M.2"),
+                    labels=c("Darnley Beach", "Darnley Dune", "Martinique Beach", "Martinique Dune"),
+                    values=c("#FFFFFF", "#666666", "#CCCCCC", "#000000"))+
+  ggtitle("Seed Ratio by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#NOTE: not much differences between treatments or zones
+ggplot(data=GHexp, aes(x=TRTMT, y=PrpnPD))+
+  geom_point(aes(shape=Zone), width=0.8, position="dodge")+ 
+  ylab("Seed Ratio") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("1", "2"),
+                    labels=c("Beach", "Dune"),
+                    values=c("#FFFFFF", "#000000"))+
+  ggtitle("Seed Ratio by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+#no outliers to be removed
+
+GHpd <- summarySE(GHexp, measurevar="PrpnPD", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHpd, aes(x=DTRTMT, y=PrpnPD, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=PrpnPD-se, ymax=PrpnPD+se), width=0.1, position=position_dodge(0.1)) +
+  geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
+  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
+  scale_shape_discrete(name  ="Zone",
+                       breaks=c("1", "2"),
+                       labels=c("Beach", "Dune")) +
+  xlab("Density") + ylab("Seed Ratio (Proximal:Distal)") +
+  ggtitle("Mean Seed Ratio by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  scale_x_discrete(labels=c("High", "Low")) +
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+#distribution
+hist(GHexp$sqrtPrpnPD) #none are good
+
+#outliers
+mean(GHexp$PrpnPD, na.rm=TRUE)
+sd(GHexp$PrpnPD, na.rm=TRUE)
+0.523+(3*0.485) #=1.978, outliers = 107, 180, 199, 209
+
+GHexppdno1  <- GHexp[-c(107, 180, 199, 209),]
+GHexppdno1$logPrpnPD  <- log10(GHexppdno1$PrpnPD+1)
+GHexppdno1$sqrtPrpnPD  <- sqrt(GHexppdno1$PrpnPD+0.5)
+GHexppdno1$rankPrpnPD  <- rank(GHexppdno1$PrpnPD, na.last="keep")
+hist(GHexp$PrpnPD)
+hist(GHexppdno1$PrpnPD) #not diff than with outliers
+
+#Does replant have an effect
+lmpdR  <- lm(PrpnPD~Replant, data=GHexp)
+lmpdRx  <- lm(PrpnPD~1, data=GHexp)
+anova(lmpdRx, lmpdR) #Replant not significant p=0.352 F=1.049
+
+#lmer vs lm
+lmepd <- lmer(PrpnPD~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
+lmpd <- lm(PrpnPD~Zone*DTRTMT*SSTRTMT, data=GHexp)
+x <- -2*logLik(lmpd, REML=T) +2*logLik(lmepd, REML=T)
+x
+pchisq(x, df=2, lower.tail=F)
+AIC(lmpd) #320.17
+AIC(lmepd) #344.22
+#sqrt: logLik=1.33, p=0.514, random Site not sig
+
+#check assumptions of best model
+lmpdR <- resid(lmpd) 
+lmpdF <- fitted(lmpd)
+plot(lmpdF, lmpdR) #lm: raw is good
+abline(h=0, col=c("red"))
+hist(lmpdR) #lm: raw good
+qqnorm(lmpdR, main="Q-Q plot for residuals") 
+qqline(lmpdR) #lm: not good, transform does not change plot..raw is best
+
+#lm
+lmpd <- lm(PrpnPD~Zone*DTRTMT*SSTRTMT, data=GHexp)
+lmpdb  <- update(lmpd,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmpdb, lmpd) #3way not sig p=0.688 f=0.16
+lmpdc  <- update(lmpdb,~.-Zone:DTRTMT)
+anova(lmpdc, lmpdb) #Zone:D marginally non sig p=0.052 f=3.822
+lmpdd  <- update(lmpdb,~.-Zone:SSTRTMT)
+anova(lmpdd, lmpdb) #Zone:SS not sig p=0.769 f=0.086
+lmpde  <- update(lmpdb,~.-DTRTMT:SSTRTMT)
+anova(lmpde, lmpdb) #D:SS not sig p=0.128 f=2.33
+lmpd2 <- lm(PrpnPD~Zone+DTRTMT+SSTRTMT, data=GHexp)
+lmpd2b  <- update(lmpd2,~.-Zone)
+anova(lmpd2b, lmpd2) #Zone not sig p=0.289 f=1.13
+lmpd2b  <- update(lmpd2,~.-DTRTMT)
+anova(lmpd2b, lmpd2) #D not sig p=0.504 f=0.447
+lmpd2b  <- update(lmpd2,~.-SSTRTMT)
+anova(lmpd2b, lmpd2) #SS not sig p=0.584 f=0.3006
+lmpdF <- lm(PrpnPD~Zone+DTRTMT+SSTRTMT, data=GHexp)
+summary(lmpdF)
+#fixed: intercept=0.559, zone est= -0.069, D est=0.045, SS est= -0.036
+#R^2=-0.005, p=0.599, f=0.6626 [3, 220]
+
+#check assumptions of best model
+lmpdFR <- resid(lmpdF) 
+lmpdFF <- fitted(lmpdF)
+plot(lmpdFF, lmpdFR) #lm: raw is good
+abline(h=0, col=c("red"))
+hist(lmpdFR) #lm: raw good
+qqnorm(lmpdFR, main="Q-Q plot for residuals") 
+qqline(lmpdFR) #lm: not good, transform does not change plot..raw is best
+
 
