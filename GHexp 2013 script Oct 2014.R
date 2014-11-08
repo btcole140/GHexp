@@ -1,4 +1,6 @@
-setwd("/Users/mac/Google Drive/R Datasets/GH Exp") #note need to change user if working on diff computer
+setwd("/Users/mac/Google Drive/R Datasets/GH Exp") #home computer
+#note need to change user if working on diff computer
+setwd("/Users/brittany/Google Drive/R Datasets/GH Exp") #lab computer
 GHexp  <- read.csv("GHexp 2013_fin.csv")
 
 #additional columns- NOTE: these columns are already attached to dataset
@@ -1282,6 +1284,7 @@ ggplot(data=GHdd, aes(x=DTRTMT, y=DDFLWF, group=Zone, shape=Zone)) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
+
 #distribution
 hist(GHexp$DDFLWF) #raw might be the best, skew left, sqrt okay but gap in middle
 
@@ -2240,14 +2243,18 @@ ggplot(data=GHchlm, aes(x=DTRTMT, y=Chl.mean, group=Zone, shape=Zone)) +
 mean(GHexp$Chl.mean, na.rm=TRUE)
 sd(GHexp$Chl.mean, na.rm=TRUE)
 36.64+(3*6.302) #=55.55 outliers = none
+<<<<<<< HEAD
 
 #distribution
 hist(GHexp$Chl.mean) #good
+=======
+>>>>>>> 8ab6fec15b87a15076ba480dd1f7187f9238cb8c
 
 
 #Does replant have an effect
 lmchlmR  <- lm(Chl.mean~Replant, data=GHexp)
 lmchlmRx  <- lm(Chl.mean~1, data=GHexp)
+<<<<<<< HEAD
 anova(lmchlmRx, lmchlmR) #Replant marginally not significant p=0.082 F=2.54
 
 #lmer vs lm
@@ -2258,10 +2265,19 @@ anova(lmechlm, lmechlma, lmechlmaa) #lmesda AIC=1304.5 is best
 #lmechlm p=0.147 chisq=2.107 AIC=1306.1, lmesdaa p=1 chisq=0 AIC=1306.2
 lmchlm <- lm(Chl.mean~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmchlm, REML=T) +2*logLik(lmechlma, REML=T)
+=======
+anova(lmchlmRx, lmchlmR) #Replant not significant p=0.456 F=0.79
+
+#lmer vs lm
+lmechlm <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
+lmchlm <- lm(Chl.mean~Zone*DTRTMT*SSTRTMT, data=GHexp)
+x <- -2*logLik(lmchlm, REML=T) +2*logLik(lmechlm, REML=T)
+>>>>>>> 8ab6fec15b87a15076ba480dd1f7187f9238cb8c
 x
 pchisq(x, df=2, lower.tail=F)
 AIC(lmchlm) #2471.66
 AIC(lmechlm) #2411.54
+<<<<<<< HEAD
 #sqrt: logLik=3.68, p=0.16, random Tote and Site not sig
 
 #check assumptions of best model
@@ -2272,6 +2288,18 @@ abline(h=0, col=c("red"))
 hist(lmchlmR) #lm: raw is good
 qqnorm(lmchlmR, main="Q-Q plot for residuals") 
 qqline(lmchlmR) #lm: raw is good
+=======
+#sqrt: logLik=8.24, p=0.016, random Site is sig
+
+#check assumptions of best model
+lmechlmR <- resid(lmechlm) 
+lmechlmF <- fitted(lmechlm)
+plot(lmechlmF, lmechlmR) #lme: raw is good, rank is best
+abline(h=0, col=c("red"))
+hist(lmechlmR) #lme: raw is good, but rank is best
+qqnorm(lmechlmR, main="Q-Q plot for residuals") 
+qqline(lmechlmR) #lme: rank is best
+>>>>>>> 8ab6fec15b87a15076ba480dd1f7187f9238cb8c
 
 #lmer
 lmechlma <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
@@ -2909,3 +2937,17 @@ qqnorm(lmpdFR, main="Q-Q plot for residuals")
 qqline(lmpdFR) #lm: not good, transform does not change plot..raw is best
 
 
+
+#*****************************
+#data summary
+write.table(GHdd, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE)
+write.table(GHnl, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHcfr, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHcgr, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHtf, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHbr, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHchlm, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHsd, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHnf, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHwc, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHpd, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
