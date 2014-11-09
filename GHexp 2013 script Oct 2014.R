@@ -1263,8 +1263,8 @@ ggplot(data=GHexpR0, aes(x=TRTMT, y=DDFLWF))+
   #no clear outliers
 
 #create plot using summarySE function output and DDFLWF
-GHdd <- summarySE(GHexp, measurevar="DDFLWF", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
-ggplot(data=GHdd, aes(x=DTRTMT, y=DDFLWF, group=Zone, shape=Zone)) +
+GHR0dd <- summarySE(GHexp, measurevar="DDFLWF", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHR0dd, aes(x=DTRTMT, y=DDFLWF, group=Zone, shape=Zone)) +
   geom_errorbar(aes(ymin=DDFLWF-se, ymax=DDFLWF+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
@@ -1375,15 +1375,15 @@ lmeddF <- lmer(DDFLWF~Replant+(1|Tote)+(1|Site), data=GHexp)
 lmedd <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexpR0)
 lmedda <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexpR0)
 lmeddaa <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpR0)
-anova(lmedd, lmedda, lmeddaa) #lmedd is best p=0.072 chisq=3.22 AIC=1114.6
-#lmedda AIC=1117.1, lmeddaa AIC=1115.9 p=<0.0001 chisq=1.20
+anova(lmedd, lmedda) #p=0.035 chisq=4.42 AIC=1114.6* AICa=1117.1
+anova(lmedd, lmeddaa) #p=0.072 chisq=3.22 AICaa=1115.9
 lmdd <- lm(DDFLWF~Zone*DTRTMT*SSTRTMT, data=GHexpR0)
 x <- -2*logLik(lmdd, REML=T) +2*logLik(lmedd, REML=T)
 x
-pchisq(x, df=2, lower.tail=F)
+0.5*(pchisq(x, df=2, lower.tail=F))
 AIC(lmdd) #=1117.23
 AIC(lmedd) #=1074.78
-#logLik=9.633, p=0.0081, random Tote and Site are sig
+#logLik=9.633, p=0.00405, random effects are sig
 
 #check assumptions of best model
 lmeddR <- resid(lmedd) 
@@ -1428,10 +1428,9 @@ hist(lmeddFR) #okay, skew left
 qqnorm(lmeddFR, main="Q-Q plot for residuals") 
 qqline(lmeddFR) #okay, has tails at each end
 
-
-#create plot using summarySE function output and DDFLWF
-GHR0dd <- summarySE(GHexpR0, measurevar="DDFLWF", groupvars=c("Site", "Zone")) 
-ggplot(data=GHR0dd, aes(x=Zone, y=DDFLWF, group=Site, shape=Site)) +
+GHR0ddF <- summarySE(GHexpR0, measurevar="DDFLWF", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+GHR0ddF2 <- summarySE(GHexpR0, measurevar="DDFLWF", groupvars=c("Site", "Zone")) 
+ggplot(data=GHR0ddF2, aes(x=Zone, y=DDFLWF, group=Site, shape=Site)) +
   geom_errorbar(aes(ymin=DDFLWF-se, ymax=DDFLWF+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   scale_shape_discrete(name  ="Site",
@@ -1522,19 +1521,19 @@ anova(lmnlRx, lmnlR) #Replant not significant p=0.894 F=0.112
 lmenl <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmenla <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmenlaa <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
-anova(lmenl, lmenla, lmenlaa) #lmenlaa is best p=<0.0001 chisq=7.93 AIC=2473.9
-#lmenl AIC=2475.9, lmenla AIC=2481.8
+anova(lmenl, lmenla) #p=0.0049 chisq=7.93 AIC=2475.9* AICa=2481.8, site is sig
+anova(lmenl, lmenlaa) #p=1 chisq=0 AICaa=2473.9*, tote not sig
 lmnl <- lm(rankNewL.D~Zone*DTRTMT*SSTRTMT, data=GHexp)
-x <- -2*logLik(lmnl, REML=T) +2*logLik(lmenlaa, REML=T)
+x <- -2*logLik(lmnl, REML=T) +2*logLik(lmenl, REML=T)
 x
-pchisq(x, df=2, lower.tail=F)
-AIC(lmnl) #=-2479.81
-AIC(lmenlaa) #=-2418.32
-#logLik=9.74, p=0.0077, random Site not sig with raw, but sig with rank
+0.5*(pchisq(x, df=2, lower.tail=F))
+AIC(lmnl) #= -2479.81
+AIC(lmenl) #= -2420.32*
+#logLik=9.74, p=0.0038, random effects are sig
 
 #check assumptions of best model
-lmenlR <- resid(lmenlaa) 
-lmenlF <- fitted(lmenlaa)
+lmenlR <- resid(lmenl) 
+lmenlF <- fitted(lmenl)
 plot(lmenlF, lmenlR) #lm: raw is slightly cone...sqrt not better...rank better
 #lme: rank is good
 abline(h=0, col=c("red"))
@@ -1545,27 +1544,25 @@ qqline(lmenlR) #lm: raw has long tail at right...sqrt not much better...rank not
 #lme: rank is okay, but has tails at each end (slight s-shape)
 
 #lme4
-lmenlaa <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
-lmenl2 <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1+Zone|Site), data=GHexp)
-anova(lmenl2, lmenl) #random slope is best, p=0.891 chisq=0.23
-lmenla  <- update(lmenl,~.-Zone:DTRTMT:SSTRTMT)
-anova(lmenla, lmenl) #3 way not sig, p=0.363 chisq=0.826
-lmenlb  <- update(lmenla,~.-Zone:DTRTMT)
-anova(lmenlb, lmenla) #Zone:D not sig, p=0.977 chisq=0.0009
-lmenlc  <- update(lmenla,~.-Zone:SSTRTMT)
-anova(lmenlc, lmenla) #Zone:SS not sig, p=0.981 chisq=0.0006
-lmenld  <- update(lmenla,~.-DTRTMT:SSTRTMT)
-anova(lmenld, lmenla) #D:SS not sig, p=0.714 chisq=0.134
-lmenle <- lmer(rankNewL.D~Zone+DTRTMT+SSTRTMT+(1|Site), data=GHexp)
-lmenle1  <- update(lmenle,~.-Zone)
-anova(lmenle1, lmenle) #Zone not sig, p=0.827 chisq=0.048
-lmenle2  <- update(lmenle,~.-DTRTMT)
-anova(lmenle2, lmenle) #D marginally not sig, p=0.077 chisq=3.13
-lmenle3  <- update(lmenle,~.-SSTRTMT)
-anova(lmenle3, lmenle) #SS is sig, p=<0.0001 chisq=27.14
-lmenlF <- lmer(rankNewL.D~SSTRTMT+(1|Site), data=GHexp)
+lmenl <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
+lmenlb  <- update(lmenl,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmenlb, lmenl) #3 way not sig, p=0.363 chisq=0.83
+lmenlc  <- update(lmenlb,~.-Zone:DTRTMT)
+anova(lmenlc, lmenlb) #Zone:D not sig, p=0.977 chisq=0.0009
+lmenld  <- update(lmenlb,~.-Zone:SSTRTMT)
+anova(lmenld, lmenlb) #Zone:SS not sig, p=0.981 chisq=0.0006
+lmenle  <- update(lmenlb,~.-DTRTMT:SSTRTMT)
+anova(lmenle, lmenlb) #D:SS not sig, p=0.714 chisq=0.134
+lmenl2 <- lmer(rankNewL.D~Zone+DTRTMT+SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
+lmenl2b  <- update(lmenl2,~.-Zone)
+anova(lmenl2b, lmenl2) #Zone not sig, p=0.827 chisq=0.048
+lmenl2c  <- update(lmenl2,~.-DTRTMT)
+anova(lmenl2c, lmenl2) #D marginally not sig, p=0.077 chisq=3.13
+lmenl2d  <- update(lmenl2,~.-SSTRTMT)
+anova(lmenl2d, lmenl2) #SS is sig, p=<0.0001 chisq=27.87 ***
+lmenlF <- lmer(rankNewL.D~SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 summary(lmenlF)
-#random: site var=388.3, resid=3369.7
+#random: tote var=0, site var=388.3, resid=3369.7
 #fixed: intercept=91.98, ss est=41.27
 
 #check assumptions
@@ -1577,8 +1574,9 @@ hist(lmenlFR) #okay
 qqnorm(lmenlFR, main="Q-Q plot for residuals") 
 qqline(lmenlFR) #not the best, stepwise pattern and tails
 
-GHnl <- summarySE(GHexp, measurevar="rankNewL.D", groupvars=c("SSTRTMT", "DTRTMT", "Site")) 
-ggplot(data=GHnl, aes(x=DTRTMT, y=rankNewL.D, group=Site, shape=Site)) +
+GHnlF <- summarySE(GHexp, measurevar="rankNewL.D", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+GHnlF2 <- summarySE(GHexp, measurevar="rankNewL.D", groupvars=c("SSTRTMT", "DTRTMT", "Site")) 
+ggplot(data=GHnlF2, aes(x=DTRTMT, y=rankNewL.D, group=Site, shape=Site)) +
   geom_errorbar(aes(ymin=rankNewL.D-se, ymax=rankNewL.D+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   facet_grid(~SSTRTMT, labeller=ss_labeller) +
@@ -1658,58 +1656,60 @@ anova(lmcfrRx, lmcfrR) #Replant not significant p=0.328 F=1.12
 lmecfr <- lmer(Cot.FR~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmecfra <- lmer(Cot.FR~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmecfraa <- lmer(Cot.FR~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
-anova(lmecfr, lmecfra, lmecfraa) #lmecfra is best AIC=1195.6
-#lmecfr p=0.71 chisq=0.13 AIC=1197.6, lmecfraa p=1.0 chisq=0, AIC=1195.7
+anova(lmecfr, lmecfra) #p=1 chisq=0 AIC=1197.6 AICa=1195.6*, site not sig
+anova(lmecfr, lmecfraa) #p=0.71 chisq=0.13 AICaa=1195.7, tote not sig
 lmcfr <- lm(Cot.FR~Zone*DTRTMT*SSTRTMT, data=GHexp)
-x <- -2*logLik(lmcfr, REML=T) +2*logLik(lmecfra, REML=T)
+x <- -2*logLik(lmcfr, REML=T) +2*logLik(lmecfr, REML=T)
 x
-pchisq(x, df=2, lower.tail=F)
-AIC(lmcfr) #=-1193.7
-AIC(lmecfra) #=-1178.2
-#logLik=0.92, p=0.631, random Tote not sig
+0.5*(pchisq(x, df=2, lower.tail=F))
+AIC(lmcfr) #= -1193.74 *
+AIC(lmecfr) #= -1179.26
+#logLik=0.92, p=0.31, random effects not sig
 
 #check assumptions of best model
-lmcfrR <- resid(lmcfr) 
-lmcfrF <- fitted(lmcfr)
-plot(lmcfrF, lmcfrR) #lm: raw is good
+lmecfrR <- resid(lmecfr) 
+lmecfrF <- fitted(lmecfr)
+plot(lmecfrF, lmecfrR) #lm: raw is good
 abline(h=0, col=c("red"))
-hist(lmcfrR) #lm: raw good
-qqnorm(lmcfrR, main="Q-Q plot for residuals") 
-qqline(lmcfrR) #lm: raw is good
+hist(lmecfrR) #lm: raw good
+qqnorm(lmecfrR, main="Q-Q plot for residuals") 
+qqline(lmecfrR) #lm: raw is good
 
 #lm
-lmcfr <- lm(Cot.FR~Zone*DTRTMT*SSTRTMT, data=GHexp)
-lmcfrb <- update(lmcfr,~.-Zone:DTRTMT:SSTRTMT)
-anova(lmcfrb, lmcfr) #3way not sig p=0.75 f=0.101
-lmcfrc <- update(lmcfrb,~.-Zone:DTRTMT)
-anova(lmcfrc, lmcfrb) #Zone:d not sig p=0.549 f=0.36
-lmcfrd <- update(lmcfrb,~.-Zone:SSTRTMT)
-anova(lmcfrd, lmcfrb) #Zone:SS marginally not sig p=0.077 f=3.16
-lmcfre <- update(lmcfrb,~.-DTRTMT:SSTRTMT)
-anova(lmcfre, lmcfrb) #D:SS not sig p=0.208 f=1.59
-lmcfrf <- lm(Cot.FR~Zone+DTRTMT+SSTRTMT, data=GHexp)
-lmcfrg <- update(lmcfrf,~.-Zone)
-anova(lmcfrg, lmcfrf) #Zone is sig p=0.0009 f=11.46 **
-lmcfrh <- update(lmcfrf,~.-DTRTMT)
-anova(lmcfrh, lmcfrf) #D is sig p=0.023 f=5.26 *
-lmcfri <- update(lmcfrf,~.-SSTRTMT)
-anova(lmcfri, lmcfrf) #SS is sig p=0.0006 f=12.3 **
-lmcfrF  <- lm(Cot.FR~Zone+DTRTMT+SSTRTMT, data=GHexp)
-summary(lmcfrF)
-#fixed: intercept=22.38, zone est= -2.86, D est=1.98, SS est= -2.99
-#R^2= 0.11, p=<0.0001 f=8.69 [3,183]
+lmecfr <- lmer(Cot.FR~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
+lmecfrb <- update(lmecfr,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmecfrb, lmecfr) #3way not sig p=0.73 chisq=0.12
+lmecfrc <- update(lmecfrb,~.-Zone:DTRTMT)
+anova(lmecfrc, lmecfrb) #Zone:d not sig p=0.547 chisq=0.36
+lmecfrd <- update(lmecfrb,~.-Zone:SSTRTMT)
+anova(lmecfrd, lmecfrb) #Zone:SS marginally not sig p=0.075 chisq=3.18
+lmecfre <- update(lmecfrb,~.-DTRTMT:SSTRTMT)
+anova(lmecfre, lmecfrb) #D:SS not sig p=0.226 chisq=1.46
+lmecfrf <- lm(Cot.FR~Zone+DTRTMT+SSTRTMT, data=GHexp)
+lmecfrg <- update(lmecfrf,~.-Zone)
+anova(lmecfrg, lmecfrf) #Zone is sig p=0.0009 chisq=11.46 **
+lmecfrh <- update(lmecfrf,~.-DTRTMT)
+anova(lmecfrh, lmecfrf) #D is sig p=0.023 chisq=5.26 *
+lmecfri <- update(lmecfrf,~.-SSTRTMT)
+anova(lmecfri, lmecfrf) #SS is sig p=0.00057 chisq=12.30 **
+lmecfrF <- lmer(Cot.FR~Zone+DTRTMT+SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
+summary(lmecfrF)
+#random: tote var=1.33, site var=0, resid=31.99
+#fixed: intercept=22.42, zone est= -2.82, D est=1.94, SS est= -3.01
+
 
 #check assumptions of best model
-lmcfrFR <- resid(lmcfrF) 
-lmcfrFF <- fitted(lmcfrF)
-plot(lmcfrFF, lmcfrFR) #lm: raw is good
+lmecfrFR <- resid(lmecfrF) 
+lmecfrFF <- fitted(lmecfrF)
+plot(lmecfrFF, lmecfrFR) #lm: raw is good
 abline(h=0, col=c("red"))
-hist(lmcfrFR) #lm: raw good
-qqnorm(lmcfrFR, main="Q-Q plot for residuals") 
-qqline(lmcfrFR) #lm: raw is good
+hist(lmecfrFR) #lm: raw good
+qqnorm(lmecfrFR, main="Q-Q plot for residuals") 
+qqline(lmecfrFR) #lm: raw is good
 
-GHcfr <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("SSTRTMT", "DTRTMT", "Zone")) 
-ggplot(data=GHcfr, aes(x=DTRTMT, y=Cot.FR, group=Zone, shape=Zone)) +
+GHcfrF <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+GHcfrF2 <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("SSTRTMT", "DTRTMT", "Zone")) 
+ggplot(data=GHcfrF2, aes(x=DTRTMT, y=Cot.FR, group=Zone, shape=Zone)) +
   geom_errorbar(aes(ymin=Cot.FR-se, ymax=Cot.FR+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   facet_grid(~SSTRTMT, labeller=ss_labeller) +
@@ -1750,6 +1750,7 @@ ggplot(data=GHexp, aes(x=TRTMT, y=Cot.GR))+
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 #NOTE: a lot of overlap between zones and between treatments, but possible difference
+
 GHcgr <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 ggplot(data=GHcgr, aes(x=DTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
   geom_errorbar(aes(ymin=Cot.GR-se, ymax=Cot.GR+se), width=0.1, position=position_dodge(0.1)) +
@@ -1788,15 +1789,15 @@ anova(lmcgrRx, lmcgrR) #Replant not significant p=0.366 F=1.01
 lmecgr <- lmer(Cot.GR~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmecgra <- lmer(Cot.GR~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmecgraa <- lmer(Cot.GR~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
-anova(lmecgr, lmecgra, lmecgraa) #lmecgr is best p=0.003 chisq=8.52 AIC=-499.08
-#lmecgra AIC=-497.74, lmecgraa p=1.0 chisq=0 AIC=-492.55
+anova(lmecgr, lmecgra) #p=0.068 chisq=3.33 AIC= -499.08* AICa= -497.74, site is marg. non sig
+anova(lmecgr, lmecgraa) #p=0.0035 chisq=8.53 AIC= -492.55, tote is sig
 lmcgr <- lm(Cot.GR~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmcgr, REML=T) +2*logLik(lmecgr, REML=T)
 x
-pchisq(x, df=2, lower.tail=F)
+0.5*(pchisq(x, df=2, lower.tail=F))
 AIC(lmcgr) #=-492.48
 AIC(lmecgr) #=-441.24
-#logLik=14.67, p=0.0006, random Tote and Site are sig
+#logLik=14.67, p=0.00033, random effects are sig
 
 #check assumptions of best model
 lmecgrR <- resid(lmecgr) 
@@ -1841,8 +1842,9 @@ hist(lmecgrFR) #lm: raw good
 qqnorm(lmecgrFR, main="Q-Q plot for residuals") 
 qqline(lmecgrFR) #lm: raw is good
 
-GHcgr <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
-ggplot(data=GHcgr, aes(x=DTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
+GHcgrF <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+GHcgrF2 <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+ggplot(data=GHcgrF2, aes(x=DTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
   geom_errorbar(aes(ymin=Cot.GR-se, ymax=Cot.GR+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
@@ -1883,6 +1885,7 @@ ggplot(data=GHexp, aes(x=TRTMT, y=TFC))+
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 #NOTE: a lot of overlap between zones and between treatments, but possible difference
+
 GHtf <- summarySE(GHexp, measurevar="TFC", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 ggplot(data=GHtf, aes(x=DTRTMT, y=TFC, group=Zone, shape=Zone)) +
   geom_errorbar(aes(ymin=TFC-se, ymax=TFC+se), width=0.1, position=position_dodge(0.1)) +
@@ -1929,15 +1932,15 @@ anova(lmtfRx, lmtfR) #Replant not significant p=0.664 F=13.17
 lmetf <- lmer(sqrtTFC~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmetfa <- lmer(sqrtTFC~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmetfaa <- lmer(sqrtTFC~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
-anova(lmetf, lmetfa, lmetfaa) #lmetf is best p=0.019 chisq=5.46 AIC=532.24
-#lmetfa AIC=530.24, lmetfaa p=1.0 chisq=0 AIC=535.7
+anova(lmetf, lmetfa) #p=1 chisq=0 AIC=532.24 AICa=530.24*, site not sig
+anova(lmetf, lmetfaa) #p=0.019 chisq=5.46 AICaa=535.70, tote is sig
 lmtf <- lm(sqrtTFC~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmtf, REML=T) +2*logLik(lmetf, REML=T)
 x
-pchisq(x, df=2, lower.tail=F)
+0.5*(pchisq(x, df=2, lower.tail=F))
 AIC(lmtf) #533.704
 AIC(lmetf) #544.61
-#sqrt: logLik=8.208, p=0.016, random Tote and Site are sig
+#sqrt: logLik=8.208, p=0.0082, random effects are sig
 
 #check assumptions of best model
 lmetfR <- resid(lmetf) 
@@ -1980,8 +1983,9 @@ hist(lmetfFR) #lm: sqrt good
 qqnorm(lmetfFR, main="Q-Q plot for residuals") 
 qqline(lmetfFR) #lm: sqrt is good
 
-GHtf <- summarySE(GHexp, measurevar="sqrtTFC", groupvars=c("SSTRTMT", "DTRTMT", "Site")) 
-ggplot(data=GHtf, aes(x=DTRTMT, y=sqrtTFC, group=Site, shape=Site)) +
+GHtfF <- summarySE(GHexp, measurevar="sqrtTFC", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+GHtfF2 <- summarySE(GHexp, measurevar="sqrtTFC", groupvars=c("SSTRTMT", "DTRTMT", "Site")) 
+ggplot(data=GHtfF2, aes(x=DTRTMT, y=sqrtTFC, group=Site, shape=Site)) +
   geom_errorbar(aes(ymin=sqrtTFC-se, ymax=sqrtTFC+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   facet_grid(~SSTRTMT, labeller=ss_labeller) +
@@ -2096,69 +2100,60 @@ anova(lmbrRx, lmbrR) #Replant not significant p=0.703 F=0.35
 lmebr <- lmer(sqrtBR.T~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmebra <- lmer(sqrtBR.T~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmebraa <- lmer(sqrtBR.T~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
-anova(lmebr, lmebra, lmebraa) #none are sig, a and aa have same AIC (568.38), which is less than lmebr (570.38)
+anova(lmebr, lmebra) #p=1 chisq=0 AIC=570.38 AICa=568.38*, site not sig
+anova(lmebr, lmebraa) #p=1 chisq=0 AICaa=568.38*, tote not sig
 lmbr <- lm(sqrtBR.T~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmbr, REML=T) +2*logLik(lmebr, REML=T)
 x
-pchisq(x, df=2, lower.tail=F)
+0.5*(pchisq(x, df=2, lower.tail=F))
 AIC(lmbr) #566.38
-AIC(lmebr) #582.73
-#sqrt: logLik=0.23, p=0.89, random Tote and Site not sig
+AIC(lmebr) #584.73
+#sqrt: logLik=0.23, p=0.44, random effects not sig
 
 #check assumptions of best model
-lmbrR <- resid(lmbr) 
-lmbrF <- fitted(lmbr)
-plot(lmbrF, lmbrR) #lm: sqrt is good
+lmebrR <- resid(lmebr) 
+lmebrF <- fitted(lmebr)
+plot(lmebrF, lmebrR) #lm: sqrt is good
 abline(h=0, col=c("red"))
-hist(lmbrR) #lm: sqrt good
-qqnorm(lmbrR, main="Q-Q plot for residuals") 
-qqline(lmbrR) #lm: none are good... go with sqrt
+hist(lmebrR) #lm: sqrt good
+qqnorm(lmebrR, main="Q-Q plot for residuals") 
+qqline(lmebrR) #lm: none are good... go with sqrt
 
-#lm
-lmbr <- lm(sqrtBR.T~Zone*DTRTMT*SSTRTMT, data=GHexp)
-lmbrb  <- update(lmbr,~.-Zone:DTRTMT:SSTRTMT)
-anova(lmbrb, lmbr) #no3: 3way not sig p=0.79 f=0.0708
-  #all: 3way not sig p=0.934 f=0.0069
-lmbrc  <- update(lmbrb,~.-Zone:DTRTMT)
-anova(lmbrc, lmbrb) #no3: Zone:D not sig p=0.12 f=2.45
-  #all: Zone:D not sig p=0.945 f=0.0047
-lmbrd  <- update(lmbrb,~.-Zone:SSTRTMT)
-anova(lmbrd, lmbrb) #no3: Zone:SS is sig p=0.045 f=4.071
-  #all: Zone:SS not sig p=0.114 f=2.52
-lmbre  <- update(lmbrb,~.-DTRTMT:SSTRTMT)
-anova(lmbre, lmbrb) #no3: D:SS not sig p=0.0019 f=9.86
-  #all:D:SS is sig p=0.0001 f=14.83 *
-lmbr2 <- lm(sqrtBR.T~Zone+DTRTMT*SSTRTMT, data=GHexp)
-lmbr2b  <- update(lmbr2,~.-Zone)
-anova(lmbr2b, lmbr2) #no3: Zone is not sig p=0.677 f=0.174
-  #all: Zone is marginally non sig p=0.086 f=2.97
-#lmbr3 <- lm(sqrtBR.T~Zone*SSTRTMT+DTRTMT, data=GHexpbrno3)
-#lmbr3b  <- update(lmbr3,~.-DTRTMT)
-#anova(lmbr3b, lmbr3) #D is not sig p=0.122 f=2.41
-lmbr4 <- lm(sqrtBR.T~SSTRTMT+DTRTMT, data=GHexp)
-lmbr4b  <- update(lmbr4,~.-SSTRTMT)
-anova(lmbr4b, lmbr4) #SS is sig p=<0.0001 f=30.31
-lmbr4c  <- update(lmbr4,~.-DTRTMT)
-anova(lmbr4c, lmbr4) #D not sig p=0.15 f=2.053
-#lmbrF <- lm(sqrtBR.T~Zone:SSTRTMT+DTRTMT:SSTRTMT+Zone+DTRTMT+SSTRTMT, data=GHexp)
-#summary(lmbrF)
-lmbrF <- lm(sqrtBR.T~DTRTMT*SSTRTMT, data=GHexp)
-summary(lmbrF)
+#lmer
+lmebr <- lmer(sqrtBR.T~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
+lmebrb  <- update(lmebr,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmebrb, lmebr) #3way not sig p=0.933 f=0.0071
+lmebrc  <- update(lmebrb,~.-Zone:DTRTMT)
+anova(lmebrc, lmebrb) #Zone:D not sig p=0.944 f=0.0048
+lmebrd  <- update(lmebrb,~.-Zone:SSTRTMT)
+anova(lmebrd, lmebrb) #Zone:SS not sig p=0.108 f=2.58
+lmebre  <- update(lmebrb,~.-DTRTMT:SSTRTMT)
+anova(lmebre, lmebrb) #D:SS is sig p=0.0001 f=14.56 *
+lmebr2 <- lmer(sqrtBR.T~Zone+DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
+lmebr2b  <- update(lmebr2,~.-Zone)
+anova(lmebr2b, lmebr2) #Zone is marginally non sig p=0.082 f=3.021
+lmebr3 <- lmer(sqrtBR.T~SSTRTMT+DTRTMT+(1|Tote)+(1|Site), data=GHexp)
+lmebr3b  <- update(lmebr3,~.-SSTRTMT)
+anova(lmebr3b, lmebr3) #SS is sig p=<0.0001 f=17.72
+lmebr3c  <- update(lmebr3,~.-DTRTMT)
+anova(lmebr3c, lmebr3) #D not sig p=0.19 f=1.708
+lmebrF <- lmer(sqrtBR.T~DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
+summary(lmebrF)
+#random: tote var=0, site var=0.0052, resid=0.704
 #fixed: intercept=1.044, d est= -0.28, ss est=0.32, d:ss est=0.90
-#R^2=0.17, p=<0.0001, f=16.34 [3, 220]
 
 #check assumptions of best model
-lmbrFR <- resid(lmbrF) 
-lmbrFF <- fitted(lmbrF)
-plot(lmbrFF, lmbrFR) #lm: sqrt is best, one group has less resid variation
+lmebrFR <- resid(lmebrF) 
+lmebrFF <- fitted(lmebrF)
+plot(lmebrFF, lmebrFR) #lme: sqrt is best, one group has less resid variation
 abline(h=0, col=c("red"))
-hist(lmbrFR) #lm: sqrt best, skew left
-qqnorm(lmbrFR, main="Q-Q plot for residuals") 
-qqline(lmbrFR) #lm: none are good... go with sqrt, long right tail and stepwise pattern
+hist(lmebrFR) #lme: sqrt best, skew left
+qqnorm(lmebrFR, main="Q-Q plot for residuals") 
+qqline(lmebrFR) #lme: none are good... go with sqrt, long right tail and stepwise pattern
 
-
-GHbr <- summarySE(GHexp, measurevar="sqrtBR.T", groupvars=c("SSTRTMT", "DTRTMT")) 
-ggplot(data=GHbr, aes(x=DTRTMT, y=sqrtBR.T, group=SSTRTMT)) +
+GHbrF <- summarySE(GHexp, measurevar="sqrtBR.T", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+GHbrF2 <- summarySE(GHexp, measurevar="sqrtBR.T", groupvars=c("SSTRTMT", "DTRTMT")) 
+ggplot(data=GHbF2r, aes(x=DTRTMT, y=sqrtBR.T, group=SSTRTMT)) +
   geom_errorbar(aes(ymin=sqrtBR.T-se, ymax=sqrtBR.T+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   facet_grid(~SSTRTMT, labeller=ss_labeller) +
@@ -2243,85 +2238,60 @@ ggplot(data=GHchlm, aes(x=DTRTMT, y=Chl.mean, group=Zone, shape=Zone)) +
 mean(GHexp$Chl.mean, na.rm=TRUE)
 sd(GHexp$Chl.mean, na.rm=TRUE)
 36.64+(3*6.302) #=55.55 outliers = none
-<<<<<<< HEAD
 
 #distribution
 hist(GHexp$Chl.mean) #good
-=======
->>>>>>> 8ab6fec15b87a15076ba480dd1f7187f9238cb8c
 
 
 #Does replant have an effect
 lmchlmR  <- lm(Chl.mean~Replant, data=GHexp)
 lmchlmRx  <- lm(Chl.mean~1, data=GHexp)
-<<<<<<< HEAD
 anova(lmchlmRx, lmchlmR) #Replant marginally not significant p=0.082 F=2.54
 
 #lmer vs lm
 lmechlm <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmechlma <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmechlmaa <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
-anova(lmechlm, lmechlma, lmechlmaa) #lmesda AIC=1304.5 is best
-#lmechlm p=0.147 chisq=2.107 AIC=1306.1, lmesdaa p=1 chisq=0 AIC=1306.2
-lmchlm <- lm(Chl.mean~Zone*DTRTMT*SSTRTMT, data=GHexp)
-x <- -2*logLik(lmchlm, REML=T) +2*logLik(lmechlma, REML=T)
-=======
-anova(lmchlmRx, lmchlmR) #Replant not significant p=0.456 F=0.79
-
-#lmer vs lm
-lmechlm <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
+anova(lmechlm, lmechlma) #p=0.55 chisq=0.35 AIC=1306.1 AICa=1304.5*, site not sig
+anova(lmechlm, lmechlmaa) #p=0.15 chisq=2.107 AICaa=1306.2, tote not sig
 lmchlm <- lm(Chl.mean~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmchlm, REML=T) +2*logLik(lmechlm, REML=T)
->>>>>>> 8ab6fec15b87a15076ba480dd1f7187f9238cb8c
 x
-pchisq(x, df=2, lower.tail=F)
-AIC(lmchlm) #2471.66
-AIC(lmechlm) #2411.54
-<<<<<<< HEAD
-#sqrt: logLik=3.68, p=0.16, random Tote and Site not sig
+0.5*(pchisq(x, df=2, lower.tail=F))
+AIC(lmchlm) #1304.37
+AIC(lmechlm) #1287.87
+#sqrt: logLik=4.57, p=0.0509, random effects are marginally non sig 
 
 #check assumptions of best model
-lmchlmR <- resid(lmchlm) 
-lmchlmF <- fitted(lmchlm)
-plot(lmchlmF, lmchlmR) #lm: raw is good
+lmechlmaR <- resid(lmechlma) 
+lmechlmaF <- fitted(lmechlma)
+plot(lmechlmaF, lmechlmaR) #lme: raw is good, rank is best
 abline(h=0, col=c("red"))
-hist(lmchlmR) #lm: raw is good
-qqnorm(lmchlmR, main="Q-Q plot for residuals") 
-qqline(lmchlmR) #lm: raw is good
-=======
-#sqrt: logLik=8.24, p=0.016, random Site is sig
-
-#check assumptions of best model
-lmechlmR <- resid(lmechlm) 
-lmechlmF <- fitted(lmechlm)
-plot(lmechlmF, lmechlmR) #lme: raw is good, rank is best
-abline(h=0, col=c("red"))
-hist(lmechlmR) #lme: raw is good, but rank is best
-qqnorm(lmechlmR, main="Q-Q plot for residuals") 
-qqline(lmechlmR) #lme: rank is best
->>>>>>> 8ab6fec15b87a15076ba480dd1f7187f9238cb8c
+hist(lmechlmaR) #lme: raw is good, but rank is best
+qqnorm(lmechlmaR, main="Q-Q plot for residuals") 
+qqline(lmechlmaR) #lme: rank is best
 
 #lmer
-lmechlma <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
-lmechlmb  <- update(lmechlma,~.-Zone:DTRTMT:SSTRTMT)
-anova(lmechlmb, lmechlma) #3way not sig p=0.152 chisq=2.052
+lmechlm <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
+lmechlmb  <- update(lmechlm,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmechlmb, lmechlm) #3way not sig p=0.152 chisq=1.96
 lmechlmc  <- update(lmechlmb,~.-Zone:DTRTMT)
-anova(lmechlmc, lmechlmb) #Zone:D not sig p=0.33 chisq=0.96
+anova(lmechlmc, lmechlmb) #Zone:D not sig p=0.31 chisq=1.02
 lmechlmd  <- update(lmechlmb,~.-Zone:SSTRTMT)
-anova(lmechlmd, lmechlmb) #Zone:SS not sig p=0.15 chisq=2.091
+anova(lmechlmd, lmechlmb) #Zone:SS not sig p=0.14 chisq=2.17
 lmechlme  <- update(lmechlmb,~.-DTRTMT:SSTRTMT)
-anova(lmechlme, lmechlmb) #3way not sig p=0.24 chisq=1.35
-lmechlm2 <- lmer(Chl.mean~Zone+DTRTMT+SSTRTMT+(1|Tote), data=GHexp)
+anova(lmechlme, lmechlmb) #3way not sig p=0.25 chisq=1.309
+lmechlm2 <- lmer(Chl.mean~Zone+DTRTMT+SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmechlm2b  <- update(lmechlm2,~.-Zone)
-anova(lmechlm2b, lmechlm2) #Zone not sig p=0.75 chisq=0.1008
+anova(lmechlm2b, lmechlm2) #Zone not sig p=0.75 chisq=0.097
 lmechlm2b  <- update(lmechlm2,~.-DTRTMT)
-anova(lmechlm2b, lmechlm2) #D is sig p=0.046 chisq=3.96 *
+anova(lmechlm2b, lmechlm2) #D is sig p=0.046 chisq=3.99 *
 lmechlm2b  <- update(lmechlm2,~.-SSTRTMT)
-anova(lmechlm2b, lmechlm2) #SS is sig p=<0.0001 chisq=18.43
-lmechlmF <- lmer(Chl.mean~DTRTMT+SSTRTMT+(1|Tote), data=GHexp)
+anova(lmechlm2b, lmechlm2) #SS is sig p=<0.0001 chisq=18.17
+lmechlmF <- lmer(Chl.mean~DTRTMT+SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 summary(lmechlmF)
-#random: tote var=2.35, resid=27.93
-#fixed: intercept=38.86, D est=2.092, SS est= -5.79
+#random: tote var=2.38, site var=0.53, resid=27.65
+#fixed: intercept=38.87, D est=2.13, SS est= -5.8
 
 #check assumptions of best model
 lmechlmFR <- resid(lmechlmF) 
@@ -2332,9 +2302,9 @@ hist(lmechlmFR) #lm: raw is good
 qqnorm(lmechlmFR, main="Q-Q plot for residuals") 
 qqline(lmechlmFR) #lm: raw is good
 
-
-GHchlm <- summarySE(GHexp, measurevar="Chl.mean", groupvars=c("SSTRTMT", "DTRTMT")) 
-ggplot(data=GHchlm, aes(x=DTRTMT, y=Chl.mean, group=SSTRTMT)) +
+GHchlmF <- summarySE(GHexp, measurevar="Chl.mean", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone"))
+GHchlmF2 <- summarySE(GHexp, measurevar="Chl.mean", groupvars=c("SSTRTMT", "DTRTMT")) 
+ggplot(data=GHchlmF2, aes(x=DTRTMT, y=Chl.mean, group=SSTRTMT)) +
   geom_errorbar(aes(ymin=Chl.mean-se, ymax=Chl.mean+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   facet_grid(~SSTRTMT, labeller=ss_labeller) +
@@ -2373,7 +2343,7 @@ ggplot(data=GHexpsdno1, aes(x=TRTMT, y=StemD.Diff))+
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 #NOTE: clear differences between treatments
-ggplot(data=GHexpsdno1, aes(x=TRTMT, y=StemD.Diff))+
+ggplot(data=GHexp, aes(x=TRTMT, y=StemD.Diff))+
   geom_point(aes(shape=Zone), width=0.8, position="dodge")+ 
   ylab("Change in Stem Diameter (cm)") +
   scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
@@ -2437,15 +2407,15 @@ anova(lmsdRx, lmsdR) #Replant not significant p=0.456 F=0.79
 lmesd <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexpsdno1)
 lmesda <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexpsdno1)
 lmesdaa <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpsdno1)
-anova(lmesd, lmesda, lmesdaa) #lmesd is best p=0.155 chisq=2.019 AIC=2467.1
-#lmesda AIC=2472.3, lmesdaa p=<0.0001 chisq=5.2 AIC=2467.2
+anova(lmesd, lmesda) #p=0.0072 chisq=7.22 AIC=2467.1* AICa=2472.3, site is sig
+anova(lmesd, lmesdaa) #p-0.15 chisq=2.019 AICaa=2467.2, tote not sig
 lmsd <- lm(rankStemD.Diff~Zone*DTRTMT*SSTRTMT, data=GHexpsdno1)
 x <- -2*logLik(lmsd, REML=T) +2*logLik(lmesd, REML=T)
 x
-pchisq(x, df=2, lower.tail=F)
+0.5*(pchisq(x, df=2, lower.tail=F))
 AIC(lmsd) #2471.66
-AIC(lmesd) #2410.004
-#sqrt: logLik=11.77, p=0.0028, random Tote and Site are sig
+AIC(lmesd) #2410.004 *
+#sqrt: logLik=11.77, p=0.0014, random effects are sig
 
 #check assumptions of best model
 lmesdR <- resid(lmesd) 
@@ -2487,9 +2457,9 @@ hist(lmesdFR) #lme: good
 qqnorm(lmesdFR, main="Q-Q plot for residuals") 
 qqline(lmesdFR) #lme: good
 
-
-GHsd <- summarySE(GHexpsdno1, measurevar="rankStemD.Diff", groupvars=c("SSTRTMT", "Site")) 
-ggplot(data=GHsd, aes(x=SSTRTMT, y=rankStemD.Diff, group=Site, shape=Site)) +
+GHsdF <- summarySE(GHexpsdno1, measurevar="rankStemD.Diff", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+GHsdF2 <- summarySE(GHexpsdno1, measurevar="rankStemD.Diff", groupvars=c("SSTRTMT", "Site")) 
+ggplot(data=GHsdF2, aes(x=SSTRTMT, y=rankStemD.Diff, group=Site, shape=Site)) +
   geom_errorbar(aes(ymin=rankStemD.Diff-se, ymax=rankStemD.Diff+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   scale_shape_discrete(name  ="Site",
@@ -2584,47 +2554,52 @@ lmnfRx  <- lm(Node.F~1, data=GHexp)
 anova(lmnfRx, lmnfR) #Replant is significant p=0.036 F=3.39
 
 #lmer vs lm
-lmenf <- lmer(Node.F~Zone*DTRTMT*SSTRTMT+Replant+(1|Site), data=GHexp)
+lmenf <- lmer(Node.F~Zone*DTRTMT*SSTRTMT+Replant+(1|Tote)+(1|Site), data=GHexp)
+lmenfa <- lmer(Node.F~Zone*DTRTMT*SSTRTMT+Replant+(1|Tote), data=GHexp)
+lmenfaa <- lmer(Node.F~Zone*DTRTMT*SSTRTMT+Replant+(1|Site), data=GHexp)
+anova(lmenf, lmenfa) # p=0.543 chisq=0.37 AIC=735.86 AICa=734.23*, site not sig
+anova(lmenf, lmenfaa) #p=0.12 chisq=2.47 AICaa=736.33, tote not sig
 lmnf <- lm(Node.F~Zone*DTRTMT*SSTRTMT+Replant, data=GHexp)
 x <- -2*logLik(lmnf, REML=T) +2*logLik(lmenf, REML=T)
 x
-pchisq(x, df=2, lower.tail=F)
+0.5*(pchisq(x, df=11, lower.tail=F))
 AIC(lmnf) #734.38
-AIC(lmenf) #734.12
-#sqrt: logLik=0.679, p=0.71, random Site not sig
+AIC(lmenf) #731.65
+#sqrt: logLik=5.14, p=0.462, random effects not sig
 
 #check assumptions of best model
-lmnfR <- resid(lmnf) 
-lmnfF <- fitted(lmnf)
-plot(lmnfF, lmnfR) #lm: raw is good
+lmenfR <- resid(lmenf) 
+lmenfF <- fitted(lmenf)
+plot(lmenfF, lmenfR) #lm: raw is good
 abline(h=0, col=c("red"))
-hist(lmnfR) #lm: raw great
-qqnorm(lmnfR, main="Q-Q plot for residuals") 
-qqline(lmnfR) #lm: raw great
+hist(lmenfR) #lm: raw great
+qqnorm(lmenfR, main="Q-Q plot for residuals") 
+qqline(lmenfR) #lm: raw great
 
-#lm
-lmnf <- lm(Node.F~Zone*DTRTMT*SSTRTMT+Replant, data=GHexp)
-lmnfb  <- update(lmnf,~.-Zone:DTRTMT:SSTRTMT)
-anova(lmnfb, lmnf) #3way not sig p=0.34 f=0.90
-lmnfc  <- update(lmnfb,~.-Zone:DTRTMT)
-anova(lmnfc, lmnfb) #Zone:D not sig p=0.33 f=0.94
-lmnfd  <- update(lmnfb,~.-Zone:SSTRTMT)
-anova(lmnfd, lmnfb) #Zone:SS not sig p=0.77 f=0.082
-lmnfe  <- update(lmnfb,~.-DTRTMT:SSTRTMT)
-anova(lmnfe, lmnfb) #D:SS not sig p=0.47 f=0.51
-lmnf2 <- lm(Node.F~Zone+DTRTMT+SSTRTMT+Replant, data=GHexp)
-lmnf2b  <- update(lmnf2,~.-Zone)
-anova(lmnf2b, lmnf2) #Zone is sig p=0.016 f=5.96
-lmnf2c  <- update(lmnf2,~.-DTRTMT)
-anova(lmnf2c, lmnf2) #D marginally non sig p=0.064 f=3.46
-lmnf2d  <- update(lmnf2,~.-SSTRTMT)
-anova(lmnf2d, lmnf2) #SS not sig p=0.16 f=1.99
-lmnf2e  <- update(lmnf2,~.-Replant)
-anova(lmnf2e, lmnf2) #Replant marginally non sig p=0.059 f=2.87
-lmnfF <- lm(Node.F~Zone, data=GHexp)
-summary(lmnfF)
-#fixed: intercept=8.73, zone est= -0.646
-#R^2=0.023, p=0.025, f=5.13 [1, 175]
+#lmer
+lmenf <- lmer(Node.F~Zone*DTRTMT*SSTRTMT+Replant+(1|Tote)+(1|Site), data=GHexp)
+lmenfb  <- update(lmenf,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmenfb, lmenf) #3way not sig p=0.302 f=1.064
+lmenfc  <- update(lmenfb,~.-Zone:DTRTMT)
+anova(lmenfc, lmenfb) #Zone:D not sig p=0.30 f=1.074
+lmenfd  <- update(lmenfb,~.-Zone:SSTRTMT)
+anova(lmenfd, lmenfb) #Zone:SS not sig p=0.76 f=0.095
+lmenfe  <- update(lmenfb,~.-DTRTMT:SSTRTMT)
+anova(lmenfe, lmenfb) #D:SS not sig p=0.509 f=0.44
+lmenf2 <- lmer(Node.F~Zone+DTRTMT+SSTRTMT+Replant+(1|Tote)+(1|Site), data=GHexp)
+lmenf2b  <- update(lmenf2,~.-Zone)
+anova(lmenf2b, lmenf2) #Zone is sig p=0.0088 f=6.87 **
+lmenf2c  <- update(lmenf2,~.-DTRTMT)
+anova(lmenf2c, lmenf2) #D marginally non sig p=0.094 f=2.809
+lmenf2d  <- update(lmenf2,~.-SSTRTMT)
+anova(lmenf2d, lmenf2) #SS not sig p=0.29 f=1.122
+lmenf2e  <- update(lmenf2,~.-Replant)
+anova(lmenf2e, lmenf2) #Replant marginally non sig p=0.056 f=5.77
+lmenfF <- lmer(Node.F~Zone+(1|Tote)+(1|Site), data=GHexp)
+summary(lmenfF)
+#random: tote var=0.33, site var=0.109, resid=3.24
+#fixed: intercept=8.78, zone est= -0.703
+
 
 #check assumptions of best model
 lmnfFR <- resid(lmnfF) 
@@ -2635,15 +2610,12 @@ hist(lmnfFR) #lm: raw great
 qqnorm(lmnfFR, main="Q-Q plot for residuals") 
 qqline(lmnfFR) #lm: raw good
 
-GHnf <- summarySE(GHexp, measurevar="Node.F", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
-ggplot(data=GHnf, aes(x=DTRTMT, y=Node.F, group=Zone, shape=Zone)) +
+GHnfF <- summarySE(GHexp, measurevar="Node.F", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone"))
+GHnfF2 <- summarySE(GHexp, measurevar="Node.F", groupvars=c("Zone")) 
+ggplot(data=GHnfF2, aes(x=Zone, y=Node.F)) +
   geom_errorbar(aes(ymin=Node.F-se, ymax=Node.F+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
-  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
-  scale_shape_discrete(name  ="Zone",
-                       breaks=c("1", "2"),
-                       labels=c("Beach", "Dune")) +
-  xlab("Density") + ylab("Total Stem Nodes") +
+  xlab("Zone") + ylab("Total Stem Nodes") +
   ggtitle("Mean Total Stem Nodes by Treatment") +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
@@ -2652,7 +2624,7 @@ ggplot(data=GHnf, aes(x=DTRTMT, y=Node.F, group=Zone, shape=Zone)) +
   theme(strip.text.y = element_text(size=20, face="bold")) +
   theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
         axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
-  scale_x_discrete(labels=c("High", "Low")) +
+  scale_x_discrete(labels=c("Beach", "Dune")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
@@ -2740,14 +2712,18 @@ lmwcRx  <- lm(WatC~1, data=GHexpwcno1)
 anova(lmwcRx, lmwcR) #Replant not significant p=0.492 F=0.71
 
 #lmer vs lm
-lmewc <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpwcno1)
+lmewc <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexpwcno1)
+lmewca <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexpwcno1)
+lmewcaa <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpwcno1)
+anova(lmewc, lmewca) #p=<0.0001 chisq=20.302 AIC= -629.92* AICa= -611.62, site is sig
+anova(lmewc, lmewcaa) #p=1 chisq=0 AICaa= -631.92*, tote not sig
 lmwc <- lm(WatC~Zone*DTRTMT*SSTRTMT, data=GHexpwcno1)
 x <- -2*logLik(lmwc, REML=T) +2*logLik(lmewc, REML=T)
 x
-pchisq(x, df=2, lower.tail=F)
+0.5*(pchisq(x, df=2, lower.tail=F))
 AIC(lmwc) #-613.62
-AIC(lmewc) #-575.81
-#sqrt: logLik=22.28, p=<0.0001, random Site is sig
+AIC(lmewc) #-573.903
+#logLik=22.27, p=<0.0001, random effects are sig
 
 #check assumptions of best model
 lmewcR <- resid(lmewc) 
@@ -2759,9 +2735,7 @@ qqnorm(lmewcR, main="Q-Q plot for residuals")
 qqline(lmewcR) #lm: transform does not change plot..raw is best
 
 #lmer
-lmewc <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpwcno1)
-lmewc2 <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1+Zone|Site), data=GHexpwcno1)
-anova(lmewc2, lmewc) #random I is best, p=0.87 chisq=0.27
+lmewc <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexpwcno1)
 lmewcb  <- update(lmewc,~.-Zone:DTRTMT:SSTRTMT)
 anova(lmewcb, lmewc) #3way not sig p=0.39 chisq=0.75
 lmewcc  <- update(lmewcb,~.-Zone:DTRTMT)
@@ -2769,29 +2743,28 @@ anova(lmewcc, lmewcb) #Zone:D not sig p=0.16 chisq=1.94
 lmewcd  <- update(lmewcb,~.-Zone:SSTRTMT)
 anova(lmewcd, lmewcb) #Zone:SS not sig p=0.56 chisq=0.33
 lmewce  <- update(lmewcb,~.-DTRTMT:SSTRTMT)
-anova(lmewce, lmewcb) #3way not sig p=0.98 chisq=0.0008
-lmewc2 <- lmer(WatC~Zone+DTRTMT+SSTRTMT+(1|Site), data=GHexpwcno1)
+anova(lmewce, lmewcb) #D:SS not sig p=0.98 chisq=0.0008
+lmewc2 <- lmer(WatC~Zone+DTRTMT+SSTRTMT+(1|Tote)+(1|Site), data=GHexpwcno1)
 lmewc2b  <- update(lmewc2,~.-Zone)
 anova(lmewc2b, lmewc2) #Zone not sig p=0.22 chisq=1.48
 lmewc2c  <- update(lmewc2,~.-DTRTMT)
 anova(lmewc2c, lmewc2) #D not sig p=0.89 chisq=0.018
 lmewc2d  <- update(lmewc2,~.-SSTRTMT)
-anova(lmewc2d, lmewc2) #SS is sig p=<0.0001 chisq=35.091
-lmewcF <- lmer(WatC~SSTRTMT+(1|Site), data=GHexpwcno1)
+anova(lmewc2d, lmewc2) #SS is sig p=<0.0001 chisq=19.77
+lmewcF <- lmer(WatC~SSTRTMT+(1|Tote)+(1|Site), data=GHexpwcno1)
 summary(lmewcF)
-#random: site var=0.00069, resid=0.0025
+#random: tote var=0.0000089, site var=0.00069, resid=0.0025
 #fixed: intercept=0.182, SS est= -0.043
 
-
-GHwc <- summarySE(GHexp, measurevar="WatC", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
-ggplot(data=GHwc, aes(x=DTRTMT, y=WatC, group=Zone, shape=Zone)) +
+GHwcF <- summarySE(GHexp, measurevar="WatC", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+GHwcF2 <- summarySE(GHexp, measurevar="WatC", groupvars=c("SSTRTMT", "Site")) 
+ggplot(data=GHwcF2, aes(x=SSTRTMT, y=WatC, group=Site, shape=Site)) +
   geom_errorbar(aes(ymin=WatC-se, ymax=WatC+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
-  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
-  scale_shape_discrete(name  ="Zone",
-                       breaks=c("1", "2"),
-                       labels=c("Beach", "Dune")) +
-  xlab("Density") + ylab("Water Content (%)") +
+  scale_shape_discrete(name  ="Site",
+                       breaks=c("D", "M"),
+                       labels=c("Darnley", "Martinique")) +
+  xlab("Spray") + ylab("Water Content (%)") +
   ggtitle("Mean Water Content by Treatment") +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
@@ -2800,7 +2773,7 @@ ggplot(data=GHwc, aes(x=DTRTMT, y=WatC, group=Zone, shape=Zone)) +
   theme(strip.text.y = element_text(size=20, face="bold")) +
   theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
         axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
-  scale_x_discrete(labels=c("High", "Low")) +
+  scale_x_discrete(labels=c("Fresh", "Salt")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
@@ -2887,60 +2860,84 @@ lmpdRx  <- lm(PrpnPD~1, data=GHexp)
 anova(lmpdRx, lmpdR) #Replant not significant p=0.352 F=1.049
 
 #lmer vs lm
-lmepd <- lmer(PrpnPD~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
+lmepd <- lmer(PrpnPD~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
+lmepda <- lmer(PrpnPD~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
+lmepdaa <- lmer(PrpnPD~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
+anova(lmepd, lmepda) #p=0.42 chisq=0.64 AIC=323.09 AICa=321.73*
+anova(lmepd, lmepdaa) #p=0.44 chisq=0.59 AICaa=321.68*
 lmpd <- lm(PrpnPD~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmpd, REML=T) +2*logLik(lmepd, REML=T)
 x
-pchisq(x, df=2, lower.tail=F)
+0.5*(pchisq(x, df=2, lower.tail=F))
 AIC(lmpd) #320.17
-AIC(lmepd) #344.22
-#sqrt: logLik=1.33, p=0.514, random Site not sig
+AIC(lmepd) #344.61
+#sqrt: logLik=2.94, p=0.115, random effects not sig
 
 #check assumptions of best model
-lmpdR <- resid(lmpd) 
-lmpdF <- fitted(lmpd)
-plot(lmpdF, lmpdR) #lm: raw is good
+lmepdR <- resid(lmepd) 
+lmepdF <- fitted(lmepd)
+plot(lmepdF, lmepdR) #lme: raw is good
 abline(h=0, col=c("red"))
-hist(lmpdR) #lm: raw good
-qqnorm(lmpdR, main="Q-Q plot for residuals") 
-qqline(lmpdR) #lm: not good, transform does not change plot..raw is best
+hist(lmepdR) #lme: raw good
+qqnorm(lmepdR, main="Q-Q plot for residuals") 
+qqline(lmepdR) #lme: not good, transform does not change plot..raw is best
 
 #lm
-lmpd <- lm(PrpnPD~Zone*DTRTMT*SSTRTMT, data=GHexp)
-lmpdb  <- update(lmpd,~.-Zone:DTRTMT:SSTRTMT)
-anova(lmpdb, lmpd) #3way not sig p=0.688 f=0.16
-lmpdc  <- update(lmpdb,~.-Zone:DTRTMT)
-anova(lmpdc, lmpdb) #Zone:D marginally non sig p=0.052 f=3.822
-lmpdd  <- update(lmpdb,~.-Zone:SSTRTMT)
-anova(lmpdd, lmpdb) #Zone:SS not sig p=0.769 f=0.086
-lmpde  <- update(lmpdb,~.-DTRTMT:SSTRTMT)
-anova(lmpde, lmpdb) #D:SS not sig p=0.128 f=2.33
-lmpd2 <- lm(PrpnPD~Zone+DTRTMT+SSTRTMT, data=GHexp)
-lmpd2b  <- update(lmpd2,~.-Zone)
-anova(lmpd2b, lmpd2) #Zone not sig p=0.289 f=1.13
-lmpd2b  <- update(lmpd2,~.-DTRTMT)
-anova(lmpd2b, lmpd2) #D not sig p=0.504 f=0.447
-lmpd2b  <- update(lmpd2,~.-SSTRTMT)
-anova(lmpd2b, lmpd2) #SS not sig p=0.584 f=0.3006
-lmpdF <- lm(PrpnPD~Zone+DTRTMT+SSTRTMT, data=GHexp)
-summary(lmpdF)
-#fixed: intercept=0.559, zone est= -0.069, D est=0.045, SS est= -0.036
-#R^2=-0.005, p=0.599, f=0.6626 [3, 220]
+lmepd <- lmer(PrpnPD~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
+lmepdb  <- update(lmepd,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmepdb, lmepd) #3way not sig p=0.67 f=0.18
+lmepdc  <- update(lmepdb,~.-Zone:DTRTMT)
+anova(lmepdc, lmepdb) #Zone:D is sig p=0.046 f=3.99 *
+lmepdd  <- update(lmepdb,~.-Zone:SSTRTMT)
+anova(lmepdd, lmepdb) #Zone:SS not sig p=0.79 f=0.07
+lmepde  <- update(lmepdb,~.-DTRTMT:SSTRTMT)
+anova(lmepde, lmepdb) #D:SS not sig p=0.17 f=1.86
+lmepd2 <- lmer(PrpnPD~Zone*DTRTMT+SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
+lmepd2b  <- update(lmepd2,~.-SSTRTMT)
+anova(lmepd2b, lmepd2) #SS not sig p=0.708 f=0.14
+lmepd3 <- lmer(PrpnPD~Zone+DTRTMT+(1|Tote)+(1|Site), data=GHexp)
+lmepd3b  <- update(lmepd3,~.-Zone)
+anova(lmepd3b, lmepd3) #Zone not sig p=0.268 f=1.23
+lmepd3c  <- update(lmepd3,~.-DTRTMT)
+anova(lmepd3c, lmepd3) #D not sig p=0.55 f=0.35
+lmepdF <- lmer(PrpnPD~Zone*DTRTMT+(1|Tote)+(1|Site), data=GHexp)
+summary(lmepdF)
+#random: tote var=0.0088, site var=0.0058, resid=0.22
+#fixed: intercept=0.59, zone est= -0.16, D est= -0.085, Zone:D est=0.26
 
 #check assumptions of best model
-lmpdFR <- resid(lmpdF) 
-lmpdFF <- fitted(lmpdF)
-plot(lmpdFF, lmpdFR) #lm: raw is good
+lmepdFR <- resid(lmepdF) 
+lmepdFF <- fitted(lmepdF)
+plot(lmepdFF, lmepdFR) #lme: raw is okay
 abline(h=0, col=c("red"))
-hist(lmpdFR) #lm: raw good
-qqnorm(lmpdFR, main="Q-Q plot for residuals") 
-qqline(lmpdFR) #lm: not good, transform does not change plot..raw is best
+hist(lmepdFR) #lme: raw okay, skew left
+qqnorm(lmepdFR, main="Q-Q plot for residuals") 
+qqline(lmepdFR) #lme: not good, transform does not change plot..raw is best
 
-
+GHpdF <- summarySE(GHexp, measurevar="PrpnPD", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+GHpdF2 <- summarySE(GHexp, measurevar="PrpnPD", groupvars=c("DTRTMT", "Zone")) 
+ggplot(data=GHpdF2, aes(x=DTRTMT, y=PrpnPD, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=PrpnPD-se, ymax=PrpnPD+se), width=0.1, position=position_dodge(0.1)) +
+  geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
+  scale_shape_discrete(name  ="Zone",
+                       breaks=c("1", "2"),
+                       labels=c("Beach", "Dune")) +
+  xlab("Density") + ylab("Seed Ratio (Proximal:Distal)") +
+  ggtitle("Mean Seed Ratio by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  scale_x_discrete(labels=c("High", "Low")) +
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
 
 #*****************************
 #data summary
-write.table(GHdd, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE)
+write.table(GHR0dd, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE)
 write.table(GHnl, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
 write.table(GHcfr, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
 write.table(GHcgr, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
@@ -2951,3 +2948,27 @@ write.table(GHsd, file = "GHexp variable summary.csv", sep = ",", col.names = TR
 write.table(GHnf, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
 write.table(GHwc, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
 write.table(GHpd, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+
+write.table(GHR0ddF, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHnlF, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHcfrF, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHcgrF, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHtfF, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHbrF, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHchlmF, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHsdF, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHnfF, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHwcF, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHpdF, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+
+write.table(GHR0ddF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHnlF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHcfrF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHcgrF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHtfF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHbrF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHchlmF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHsdF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHnfF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHwcF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHpdF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
