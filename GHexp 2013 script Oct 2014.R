@@ -1349,8 +1349,6 @@ qqline(lmeddR) #raw is okay, tails at each end
 
 #lmer()
 lmedd <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+Replant+(1|Tote)+(1|Site), data=GHexp)
-lmedd2 <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+Replant+(1|Tote)+(1+Zone|Site), data=GHexp)
-anova(lmedd, lmedd2) #Random slope is best, p=0.955 chisq=0.091
 lmeddb <- update(lmedd,~.-Zone:DTRTMT:SSTRTMT)
 anova(lmeddb, lmedd) #3Interact not sig, p=0.338 chisq=0.916
 lmeddc <- update(lmeddb,~.-Zone:DTRTMT)
