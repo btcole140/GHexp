@@ -1375,8 +1375,8 @@ lmeddF <- lmer(DDFLWF~Replant+(1|Tote)+(1|Site), data=GHexp)
 lmedd <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexpR0)
 lmedda <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexpR0)
 lmeddaa <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpR0)
-anova(lmedd, lmedda) #p=0.035 chisq=4.42 AIC=1114.6* AICa=1117.1
-anova(lmedd, lmeddaa) #p=0.072 chisq=3.22 AICaa=1115.9
+anova(lmedd, lmedda) #p=0.035 chisq=4.42 AIC=1114.6* AICa=1117.1, site is sig
+anova(lmedd, lmeddaa) #p=0.072 chisq=3.22 AICaa=1115.9, tote is marginally non sig
 lmdd <- lm(DDFLWF~Zone*DTRTMT*SSTRTMT, data=GHexpR0)
 x <- -2*logLik(lmdd, REML=T) +2*logLik(lmedd, REML=T)
 x
@@ -1397,8 +1397,6 @@ qqline(lmeddR) #raw is okay, tails at each end
 
 #lmer()
 lmedd <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexpR0)
-lmedd2 <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexpR0)
-anova(lmedd, lmedd2) #Random slope is best, p=0.88 chisq=0.25
 lmeddb <- update(lmedd,~.-Zone:DTRTMT:SSTRTMT)
 anova(lmeddb, lmedd) #3Interact not sig, p=0.88 chisq=0.024
 lmeddc <- update(lmeddb,~.-Zone:DTRTMT)
