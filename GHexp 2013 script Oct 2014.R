@@ -2268,6 +2268,7 @@ lmechlma <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmechlmaa <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmechlm, lmechlma) #p=0.55 chisq=0.35 AIC=1306.1 AICa=1304.5*, site not sig
 anova(lmechlm, lmechlmaa) #p=0.15 chisq=2.107 AICaa=1306.2, tote not sig
+anova(lmechlm, lmechlmaaa) #p=0.99 chisq=0.013 AICaa=1310.1, zone not sig
 lmchlm <- lm(Chl.mean~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmchlm, REML=T) +2*logLik(lmechlm, REML=T)
 x
@@ -2410,6 +2411,7 @@ GHexpsdno1$sqrtStemD.Diff  <- sqrt(GHexpsdno1$StemD.Diff+10.5)
 GHexpsdno1$rankStemD.Diff  <- rank(GHexpsdno1$StemD.Diff)
 hist(GHexpsdno1$StemD.Diff) #raw okay
 hist(GHexp$StemD.Diff) #removing outlier is much better distribution
+GHexpsdno1$rankStemD.Diff  <- rank(GHexpsdno1$StemD.Diff)
 
 
 #Does replant have an effect
@@ -2418,11 +2420,13 @@ lmsdRx  <- lm(rankStemD.Diff~1, data=GHexpsdno1)
 anova(lmsdRx, lmsdR) #Replant not significant p=0.456 F=0.79
 
 #lmer vs lm
+lmesdaaa <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexpsdno1)
 lmesd <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexpsdno1)
 lmesda <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexpsdno1)
 lmesdaa <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpsdno1)
 anova(lmesd, lmesda) #p=0.0072 chisq=7.22 AIC=2467.1* AICa=2472.3, site is sig
 anova(lmesd, lmesdaa) #p-0.15 chisq=2.019 AICaa=2467.2, tote not sig
+anova(lmesd, lmesdaaa) #p=1.0 chisq=0.0008 AICaa=2471.1, zone not sig
 lmsd <- lm(rankStemD.Diff~Zone*DTRTMT*SSTRTMT, data=GHexpsdno1)
 x <- -2*logLik(lmsd, REML=T) +2*logLik(lmesd, REML=T)
 x
@@ -2568,11 +2572,13 @@ lmnfRx  <- lm(Node.F~1, data=GHexp)
 anova(lmnfRx, lmnfR) #Replant is significant p=0.036 F=3.39
 
 #lmer vs lm
+lmenfaaa <- lmer(Node.F~Zone*DTRTMT*SSTRTMT+Replant+(1|Tote)+(1+Zone|Site), data=GHexp)
 lmenf <- lmer(Node.F~Zone*DTRTMT*SSTRTMT+Replant+(1|Tote)+(1|Site), data=GHexp)
 lmenfa <- lmer(Node.F~Zone*DTRTMT*SSTRTMT+Replant+(1|Tote), data=GHexp)
 lmenfaa <- lmer(Node.F~Zone*DTRTMT*SSTRTMT+Replant+(1|Site), data=GHexp)
 anova(lmenf, lmenfa) # p=0.543 chisq=0.37 AIC=735.86 AICa=734.23*, site not sig
 anova(lmenf, lmenfaa) #p=0.12 chisq=2.47 AICaa=736.33, tote not sig
+anova(lmenf, lmenfaaa) #p=0.57 chisq=1.11 AICaa=738.74, zone not sig
 lmnf <- lm(Node.F~Zone*DTRTMT*SSTRTMT+Replant, data=GHexp)
 x <- -2*logLik(lmnf, REML=T) +2*logLik(lmenf, REML=T)
 x
@@ -2740,11 +2746,13 @@ lmwcRx  <- lm(WatC~1, data=GHexpwcno1)
 anova(lmwcRx, lmwcR) #Replant not significant p=0.492 F=0.71
 
 #lmer vs lm
+lmewcaaa <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexpwcno1)
 lmewc <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexpwcno1)
 lmewca <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexpwcno1)
 lmewcaa <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpwcno1)
 anova(lmewc, lmewca) #p=<0.0001 chisq=20.302 AIC= -629.92* AICa= -611.62, site is sig
 anova(lmewc, lmewcaa) #p=1 chisq=0 AICaa= -631.92*, tote not sig
+anova(lmewc, lmewcaaa) #p=0.87 chisq=0.27 AICaaa= -626.19, zone not sig
 lmwc <- lm(WatC~Zone*DTRTMT*SSTRTMT, data=GHexpwcno1)
 x <- -2*logLik(lmwc, REML=T) +2*logLik(lmewc, REML=T)
 x
@@ -2888,11 +2896,13 @@ lmpdRx  <- lm(PrpnPD~1, data=GHexp)
 anova(lmpdRx, lmpdR) #Replant not significant p=0.352 F=1.049
 
 #lmer vs lm
+lmepdaaa <- lmer(PrpnPD~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexp)
 lmepd <- lmer(PrpnPD~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmepda <- lmer(PrpnPD~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmepdaa <- lmer(PrpnPD~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmepd, lmepda) #p=0.42 chisq=0.64 AIC=323.09 AICa=321.73*, site not sig
 anova(lmepd, lmepdaa) #p=0.44 chisq=0.59 AICaa=321.68*, tote not sig
+anova(lmepd, lmepdaaa) #p=0.85 chisq=0.33 AICaa=326.76, zone not sig
 lmpd <- lm(PrpnPD~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmpd, REML=T) +2*logLik(lmepd, REML=T)
 x
