@@ -3,6 +3,8 @@ setwd("/Users/mac/Google Drive/R Datasets/GH Exp") #home computer
 setwd("/Users/brittany/Google Drive/R Datasets/GH Exp") #lab computer
 GHexp  <- read.csv("GHexp 2013_fin.csv")
 
+#read this http://www.rpubs.com/GGranath/25354
+
 #additional columns- NOTE: these columns are already attached to dataset
 #ghexp$SeedDm <- ghexp$MEANSEEDD #change column names
 #ghexp$SeedPm <- ghexp$MEANSEEDP #change column names
@@ -1323,11 +1325,12 @@ lmddRx  <- lm(DDFLWF~1, data=GHexp)
 anova(lmddRx, lmddR) #Replant was significant p=0.0008 F=7.38
 
 #lmer vs lm
+lmeddaaa <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+Replant+(1|Tote)+(1+Zone|Site), data=GHexp)
 lmedd <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+Replant+(1|Tote)+(1|Site), data=GHexp)
 lmedda <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+Replant+(1|Tote), data=GHexp)
 lmeddaa <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+Replant+(1|Site), data=GHexp)
-anova(lmedd, lmedda, lmeddaa) #lmedd is best p=0.023 chisq=5.18 AIC=1481.9
-  #lmedda AIC=1486.6, lmeddaa AIC=1485.1 p=<0.0001 chisq=1.49
+anova(lmedd, lmedda, lmeddaa, lmeddaaa) #lmedda is best p=0.023 chisq=5.18 AIC=1481.9
+  #lmedd AIC=1485.8 p=0.95 chisq=0.091, lmeddaa AIC=1486.6, lmeddaaa AIC=1485.1 p=<0.0001 chisq=1.49
 lmdd <- lm(DDFLWF~Zone*DTRTMT*SSTRTMT+Replant, data=GHexp)
 x <- -2*logLik(lmdd, REML=T) +2*logLik(lmedd, REML=T)
 x
@@ -1370,11 +1373,13 @@ lmeddF <- lmer(DDFLWF~Replant+(1|Tote)+(1|Site), data=GHexp)
 #replant sig, therefore must use data=GHexpR0
 
 #lmer vs lm (GHexpR0)
+lmeddaaa <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexpR0)
 lmedd <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexpR0)
 lmedda <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexpR0)
 lmeddaa <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpR0)
 anova(lmedd, lmedda) #p=0.035 chisq=4.42 AIC=1114.6* AICa=1117.1, site is sig
 anova(lmedd, lmeddaa) #p=0.072 chisq=3.22 AICaa=1115.9, tote is marginally non sig
+anova(lmedd, lmeddaaa) #p=0.88 chisq=0.25 AICaa=1118.4, zone is not sig
 lmdd <- lm(DDFLWF~Zone*DTRTMT*SSTRTMT, data=GHexpR0)
 x <- -2*logLik(lmdd, REML=T) +2*logLik(lmedd, REML=T)
 x
