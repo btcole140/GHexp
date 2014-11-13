@@ -1519,11 +1519,13 @@ anova(lmnlRx, lmnlR) #Replant not significant p=0.894 F=0.112
 
 
 #lmer vs lm
+lmenlaaa <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexp)
 lmenl <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmenla <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmenlaa <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmenl, lmenla) #p=0.0049 chisq=7.93 AIC=2475.9* AICa=2481.8, site is sig
 anova(lmenl, lmenlaa) #p=1 chisq=0 AICaa=2473.9*, tote not sig
+anova(lmenl, lmenlaaa) #p=0.97 chisq=0.23 AICaa=2479.7, zone not sig
 lmnl <- lm(rankNewL.D~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmnl, REML=T) +2*logLik(lmenl, REML=T)
 x
@@ -1653,11 +1655,13 @@ lmcfrRx  <- lm(Cot.FR~1, data=GHexp)
 anova(lmcfrRx, lmcfrR) #Replant not significant p=0.328 F=1.12
 
 #lmer vs lm
+lmecfraaa <- lmer(Cot.FR~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexp)
 lmecfr <- lmer(Cot.FR~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmecfra <- lmer(Cot.FR~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmecfraa <- lmer(Cot.FR~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmecfr, lmecfra) #p=1 chisq=0 AIC=1197.6 AICa=1195.6*, site not sig
 anova(lmecfr, lmecfraa) #p=0.71 chisq=0.13 AICaa=1195.7, tote not sig
+anova(lmecfr, lmecfraaa) #p=0.29 chisq=3.73 AICaa=1198.0, zone not sig
 lmcfr <- lm(Cot.FR~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmcfr, REML=T) +2*logLik(lmecfr, REML=T)
 x
@@ -1786,11 +1790,19 @@ lmcgrRx  <- lm(Cot.GR~1, data=GHexp)
 anova(lmcgrRx, lmcgrR) #Replant not significant p=0.366 F=1.01
 
 #lmer vs lm
+lmecgraaa <- lmer(Cot.GR~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexp)
 lmecgr <- lmer(Cot.GR~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmecgra <- lmer(Cot.GR~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmecgraa <- lmer(Cot.GR~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmecgr, lmecgra) #p=0.068 chisq=3.33 AIC= -499.08* AICa= -497.74, site is marg. non sig
 anova(lmecgr, lmecgraa) #p=0.0035 chisq=8.53 AIC= -492.55, tote is sig
+anova(lmecgr, lmecgraaa) #p=0.0066 chisq=12.24 AIC= -492.55, zone is sig, BUT cannot trust this result
+  #because received warning messages (see below) which suggest I may be getting a false result
+#Warning messages:
+#1: In checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv,  :
+#                 Model failed to converge with max|grad| = 0.380908 (tol = 0.002)
+#                2: In checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv,  :
+#                                  Model failed to converge: degenerate  Hessian with 1 negative eigenvalues
 lmcgr <- lm(Cot.GR~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmcgr, REML=T) +2*logLik(lmecgr, REML=T)
 x
@@ -1929,11 +1941,13 @@ lmtfRx  <- lm(TFC~1, data=GHexp)
 anova(lmtfRx, lmtfR) #Replant not significant p=0.664 F=13.17
 
 #lmer vs lm
+lmetfaaa <- lmer(sqrtTFC~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexp)
 lmetf <- lmer(sqrtTFC~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmetfa <- lmer(sqrtTFC~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmetfaa <- lmer(sqrtTFC~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmetf, lmetfa) #p=1 chisq=0 AIC=532.24 AICa=530.24*, site not sig
 anova(lmetf, lmetfaa) #p=0.019 chisq=5.46 AICaa=535.70, tote is sig
+anova(lmetf, lmetfaaa) #p=0.14 chisq=5.46 AICaa=536.24, zone not sig
 lmtf <- lm(sqrtTFC~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmtf, REML=T) +2*logLik(lmetf, REML=T)
 x
@@ -2094,11 +2108,13 @@ lmbrRx  <- lm(sqrtBR.T~1, data=GHexp)
 anova(lmbrRx, lmbrR) #Replant not significant p=0.703 F=0.35
 
 #lmer vs lm
+lmebraaa <- lmer(sqrtBR.T~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexp)
 lmebr <- lmer(sqrtBR.T~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmebra <- lmer(sqrtBR.T~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmebraa <- lmer(sqrtBR.T~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmebr, lmebra) #p=1 chisq=0 AIC=570.38 AICa=568.38*, site not sig
 anova(lmebr, lmebraa) #p=1 chisq=0 AICaa=568.38*, tote not sig
+anova(lmebr, lmebraaa) #p=1.0 chisq=0.0027 AICaa=574.37, zone not sig
 lmbr <- lm(sqrtBR.T~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmbr, REML=T) +2*logLik(lmebr, REML=T)
 x
@@ -2246,6 +2262,7 @@ lmchlmRx  <- lm(Chl.mean~1, data=GHexp)
 anova(lmchlmRx, lmchlmR) #Replant marginally not significant p=0.082 F=2.54
 
 #lmer vs lm
+lmechlmaaa <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexp)
 lmechlm <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
 lmechlma <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmechlmaa <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
