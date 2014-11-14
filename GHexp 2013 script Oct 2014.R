@@ -1711,7 +1711,10 @@ hist(lmecfrFR) #lm: raw good
 qqnorm(lmecfrFR, main="Q-Q plot for residuals") 
 qqline(lmecfrFR) #lm: raw is good
 
-GHcfrF <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
+GHcfrF <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone"))
+GHcfrFa <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("SSTRTMT")) 
+GHcfrFb <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("DTRTMT")) 
+GHcfrFc <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("Zone")) 
 GHcfrF2 <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("SSTRTMT", "DTRTMT", "Zone")) 
 ggplot(data=GHcfrF2, aes(x=DTRTMT, y=Cot.FR, group=Zone, shape=Zone)) +
   geom_errorbar(aes(ymin=Cot.FR-se, ymax=Cot.FR+se), width=0.1, position=position_dodge(0.1)) +
@@ -1855,16 +1858,18 @@ qqnorm(lmecgrFR, main="Q-Q plot for residuals")
 qqline(lmecgrFR) #lm: raw is good
 
 GHcgrF <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
-GHcgrF2 <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
-ggplot(data=GHcgrF2, aes(x=DTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
+GHcgrFa <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("DTRTMT")) 
+GHcgrFb <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "Zone")) 
+GHcgrF2 <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Zone")) 
+ggplot(data=GHcgrF2, aes(x=SSTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
   geom_errorbar(aes(ymin=Cot.GR-se, ymax=Cot.GR+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
-  facet_grid(Site~SSTRTMT, labeller=ss_labeller) +
+  facet_grid(~DTRTMT, labeller=d_labeller) +
   scale_shape_discrete(name  ="Zone",
                        breaks=c("1", "2"),
                        labels=c("Beach", "Dune")) +
-  xlab("Density") + ylab("Stem Growth Rate (cm/day)") +
-  ggtitle("Mean Stem GR by Treatment") +0
+  xlab("Spray") + ylab("Stem Growth Rate (cm/day)") +
+  ggtitle("Mean Stem GR by Treatment") +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -1872,7 +1877,7 @@ ggplot(data=GHcgrF2, aes(x=DTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
   theme(strip.text.y = element_text(size=20, face="bold")) +
   theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
         axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
-  scale_x_discrete(labels=c("High", "Low")) +
+  scale_x_discrete(labels=c("Fresh", "Salt")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
@@ -2318,6 +2323,8 @@ qqnorm(lmechlmFR, main="Q-Q plot for residuals")
 qqline(lmechlmFR) #lm: raw is good
 
 GHchlmF <- summarySE(GHexp, measurevar="Chl.mean", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone"))
+GHchlmFa <- summarySE(GHexp, measurevar="Chl.mean", groupvars=c("SSTRTMT"))
+GHchlmFb <- summarySE(GHexp, measurevar="Chl.mean", groupvars=c("DTRTMT"))
 GHchlmF2 <- summarySE(GHexp, measurevar="Chl.mean", groupvars=c("SSTRTMT", "DTRTMT")) 
 ggplot(data=GHchlmF2, aes(x=DTRTMT, y=Chl.mean, group=SSTRTMT)) +
   geom_errorbar(aes(ymin=Chl.mean-se, ymax=Chl.mean+se), width=0.1, position=position_dodge(0.1)) +
@@ -3010,3 +3017,14 @@ write.table(GHsdF2, file = "GHexp variable summary.csv", sep = ",", col.names = 
 write.table(GHnfF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
 write.table(GHwcF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
 write.table(GHpdF2, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+
+write.table(GHcfrFa, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHcfrFb, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHcfrFc, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHcgrFa, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHcgrFb, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHchlmFa, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+write.table(GHchlmFb, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+
+
+
