@@ -3027,4 +3027,207 @@ write.table(GHchlmFa, file = "GHexp variable summary.csv", sep = ",", col.names 
 write.table(GHchlmFb, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
 
 
+#*****************************
+#Correlations
+#*****************************
+#variables to consider: tfc, cot.fr, br.t, newl.d, ddflwf
 
+#tfc~cot.fr
+lmfcfr  <- lm(sqrtTFC~Cot.FR, data=GHexp, na.action="na.omit")
+lmfcfrR  <- resid(lmfcfr)
+par(mfrow=c(2,2))
+plot(lmfcfr)
+par(mfrow=c(1,1))
+hist(lmfcfrR)
+
+#tfc~br.t
+lmfbr  <- lm(sqrtTFC~sqrtBR.T, data=GHexp, na.action="na.omit")
+lmfbrR  <- resid(lmfbr)
+par(mfrow=c(2,2))
+plot(lmfbr)
+par(mfrow=c(1,1))
+hist(lmfbrR)
+
+#tfc~newl.d
+lmfnl  <- lm(sqrtTFC~rankNewL.D, data=GHexp, na.action="na.omit")
+lmfnlR  <- resid(lmfnl)
+par(mfrow=c(2,2))
+plot(lmfnl)
+par(mfrow=c(1,1))
+hist(lmfnlR)
+
+#tfc~ddflwf
+lmfdd  <- lm(sqrtTFC~DDFLWF, data=GHexp, na.action="na.omit")
+lmfddR  <- resid(lmfdd)
+par(mfrow=c(2,2))
+plot(lmfdd)
+par(mfrow=c(1,1))
+hist(lmfddR)
+
+#cotfr~br.t
+lmcfrbr  <- lm(Cot.FR~sqrtBR.T, data=GHexp, na.action="na.omit")
+lmcfrbrR  <- resid(lmcfrbr)
+par(mfrow=c(2,2))
+plot(lmcfrbr)
+par(mfrow=c(1,1))
+hist(lmcfrbrR)
+
+#cotfr~newl.d
+lmcfrnl  <- lm(Cot.FR~rankNewL.D, data=GHexp, na.action="na.omit")
+lmcfrnlR  <- resid(lmcfrnl)
+par(mfrow=c(2,2))
+plot(lmcfrnl)
+par(mfrow=c(1,1))
+hist(lmcfrnlR)
+
+#cotfr~ddflwf
+lmcfrdd  <- lm(Cot.FR~DDFLWF, data=GHexp, na.action="na.omit")
+lmcfrddR  <- resid(lmcfrdd)
+par(mfrow=c(2,2))
+plot(lmcfrdd)
+par(mfrow=c(1,1))
+hist(lmcfrddR)
+
+#brt~newl.d
+lmbrnl  <- lm(rankBR.T~rankNewL.D, data=GHexp, na.action="na.omit")
+lmbrnlR  <- resid(lmbrnl)
+par(mfrow=c(2,2))
+plot(lmbrnl)
+par(mfrow=c(1,1))
+hist(lmbrnlR)
+
+#brt~ddflwf
+lmbrdd  <- lm(sqrtBR.T~DDFLWF, data=GHexp, na.action="na.omit")
+lmbrddR  <- resid(lmbrdd)
+par(mfrow=c(2,2))
+plot(lmbrdd)
+par(mfrow=c(1,1))
+hist(lmbrddR)
+
+#newld~ddflwf
+lmnldd  <- lm(rankNewL.D~DDFLWF, data=GHexp, na.action="na.omit")
+lmnlddR  <- resid(lmnldd)
+par(mfrow=c(2,2))
+plot(lmnldd)
+par(mfrow=c(1,1))
+hist(lmnlddR)
+
+cor.test(GHexp$sqrtTFC, GHexp$Cot.FR, method="pearson", na.action="na.omit") #r=0.25 p=0.00048 **
+cor.test(GHexp$sqrtTFC, GHexp$sqrtBR.T, method="pearson", na.action="na.omit") #r=0.397 p=<0.0001 ***
+cor.test(GHexp$sqrtTFC, GHexp$rankNewL.D, method="pearson", na.action="na.omit") #r= -0.065 p=0.34
+cor.test(GHexp$sqrtTFC, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.47 p=<0.0001 ***
+cor.test(GHexp$Cot.FR, GHexp$sqrtBR.T, method="pearson", na.action="na.omit") #r=0.0012 p=0.99
+cor.test(GHexp$Cot.FR, GHexp$rankNewL.D, method="pearson", na.action="na.omit") #r= -0.15 p=0.039 *
+cor.test(GHexp$Cot.FR, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.084 p=0.26
+cor.test(GHexp$rankBR.T, GHexp$rankNewL.D, method="pearson", na.action="na.omit") #r=0.45 p=<0.0001 ***
+cor.test(GHexp$sqrtBR.T, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.25 p=0.00067 **
+cor.test(GHexp$rankNewL.D, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.077 p=0.309
+
+ggplot(data=GHexp, aes(x=sqrtTFC, y=Cot.FR, group=Zone, colour=Zone)) +
+  geom_point(size=4, position=position_dodge(0.1))+
+  geom_smooth(aes(colour=Zone),method=lm, se=FALSE, fullrange=T)+
+  facet_grid(DTRTMT~SSTRTMT, labeller=ss_labeller) +
+  scale_colour_manual(name="Zone", breaks=c("1", "2"), labels=c("Beach", "Dune"),
+                       values=c("#999999", "#000000")) +
+  xlab(expression(bold(sqrt(Lifetime~Fitness)))) + ylab("Stem Length (cm)") +
+  ggtitle("TFC~Cot.FR by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+ggplot(data=GHexp, aes(x=sqrtTFC, y=Cot.FR, group=Zone, colour=Zone)) +
+  geom_point(size=4, position=position_dodge(0.1))+
+  geom_smooth(aes(colour=Zone),method=lm, se=FALSE, fullrange=T)+
+  scale_colour_manual(name="Zone", breaks=c("1", "2"), labels=c("Beach", "Dune"),
+                      values=c("#999999", "#000000")) +
+  xlab(expression(bold(sqrt(Lifetime~Fitness)))) + ylab("Stem Length (cm)") +
+  ggtitle("TFC~Cot.FR by Zone") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+ggplot(data=GHexp, aes(x=sqrtTFC, y=Cot.FR, group=SSTRTMT, colour=SSTRTMT)) +
+  geom_point(size=4, position=position_dodge(0.1))+
+  geom_smooth(aes(colour=SSTRTMT),method=lm, se=FALSE, fullrange=T)+
+  scale_colour_manual(name="Spray", breaks=c("C", "SS"), labels=c("Fresh", "Salt"),
+                      values=c("#999999", "#000000")) +
+  xlab(expression(bold(sqrt(Lifetime~Fitness)))) + ylab("Stem Length (cm)") +
+  ggtitle("TFC~Cot.FR by Spray") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+ggplot(data=GHexp, aes(x=sqrtTFC, y=Cot.FR, group=DTRTMT, colour=DTRTMT)) +
+  geom_point(size=4, position=position_dodge(0.1))+
+  geom_smooth(aes(colour=DTRTMT),method=lm, se=FALSE, fullrange=T)+
+  scale_colour_manual(name="Density", breaks=c("HD", "LD"), labels=c("High", "Low"),
+                      values=c("#999999", "#000000")) +
+  xlab(expression(bold(sqrt(Lifetime~Fitness)))) + ylab("Stem Length (cm)") +
+  ggtitle("TFC~Cot.FR by Density") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+ggplot(data=GHexp, aes(x=sqrtTFC, y=sqrtBR.T, group=Zone, colour=Zone)) +
+  geom_point(size=4, position=position_dodge(0.1))+
+  geom_smooth(aes(colour=Zone),method=lm, se=FALSE, fullrange=T)+
+  facet_grid(DTRTMT~SSTRTMT, labeller=ss_labeller) +
+  scale_colour_manual(name="Zone", breaks=c("1", "2"), labels=c("Beach", "Dune"),
+                      values=c("#999999", "#000000")) +
+  xlab(expression(bold(sqrt(Lifetime~Fitness)))) + ylab(expression(bold(sqrt(Total~Branches)))) +
+  ggtitle("TFC~BR.T by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+ggplot(data=GHexp, aes(x=sqrtTFC, y=DDFLWF, group=Zone, colour=Zone)) +
+  geom_point(size=4, position=position_dodge(0.1))+
+  geom_smooth(aes(colour=Zone),method=lm, se=FALSE, fullrange=T)+
+  facet_grid(DTRTMT~SSTRTMT, labeller=ss_labeller) +
+  scale_colour_manual(name="Zone", breaks=c("1", "2"), labels=c("Beach", "Dune"),
+                      values=c("#999999", "#000000")) +
+  xlab(expression(bold(sqrt(Lifetime~Fitness)))) + ylab("Flowering Duration (days)") +
+  ggtitle("TFC~DDFLWF by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
+
+
+#******************************
