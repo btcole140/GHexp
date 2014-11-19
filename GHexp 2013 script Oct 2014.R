@@ -1881,6 +1881,21 @@ ggplot(data=GHcgrF2, aes(x=SSTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
+
+aovcgrzs  <- aov(Cot.GR~Zone:SSTRTMT, data=GHexp)
+TukeyHSD(aovcgrzs)
+  #           diff         lwr         upr     p adj
+#2:C-1:C   -0.05831061 -0.09968731 -0.01693391 0.0018653 **
+#1:SS-1:C  -0.11658960 -0.15759520 -0.07558400 0.0000000 ***
+#2:SS-1:C  -0.12990204 -0.17109023 -0.08871385 0.0000000 ***
+#1:SS-2:C  -0.05827899 -0.09928459 -0.01727339 0.0016681 **
+#2:SS-2:C  -0.07159143 -0.11277962 -0.03040324 0.0000653 ***
+#2:SS-1:SS -0.01331244 -0.05412781  0.02750294 0.8331023
+
+  #Dune plants differ from beach in freshwater-spray
+  #Beach plants differ between freshwater and saltwater spray
+  #Dune plants differ between freshwater and saltwater spray
+
 #********************
 ##Response Variable: TFC
 #boxplot
@@ -2020,6 +2035,19 @@ ggplot(data=GHtfF2, aes(x=DTRTMT, y=sqrtTFC, group=SSTRTMT)) +
   scale_x_discrete(labels=c("High", "Low")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
+
+aovtfds  <- aov(sqrtTFC~DTRTMT:SSTRTMT, data=GHexp)
+TukeyHSD(aovtfds)
+  #               diff        lwr        upr     p adj
+#LD:C-HD:C   -0.01020079 -0.4284229  0.4080213 0.9999094
+#HD:SS-HD:C  -0.63532326 -0.9837126 -0.2869340 0.0000249 ***
+#LD:SS-HD:C   0.26607382 -0.1486585  0.6808061 0.3469018
+#HD:SS-LD:C  -0.62512247 -1.0412958 -0.2089492 0.0007686 **
+#LD:SS-LD:C   0.27627461 -0.1968300  0.7493792 0.4320745
+#LD:SS-HD:SS  0.90139708  0.4887309  1.3140632 0.0000003 ***
+
+  #High density plants differed between saltwater and freshwater spray
+  #Salt-sprayed plants differed between high and low densities
 
 #********************
 ##Response Variable: BR.T
@@ -2188,6 +2216,18 @@ ggplot(data=GHbF2r, aes(x=DTRTMT, y=sqrtBR.T, group=SSTRTMT)) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
+aovbrds  <- aov(sqrtBR.T~DTRTMT:SSTRTMT, data=GHexp)
+TukeyHSD(aovbrds)
+#               diff         lwr       upr     p adj
+#LD:C-HD:C   -0.2758500 -0.70511677 0.1534168 0.3455339
+#HD:SS-HD:C   0.3167624 -0.04603424 0.6795591 0.1106596
+#LD:SS-HD:C   0.9388238  0.50955698 1.3680905 0.0000003 ***
+#HD:SS-LD:C   0.5926124  0.16334561 1.0218792 0.0024250 **
+#LD:SS-LD:C   1.2146737  0.72793097 1.7014165 0.0000000 ***
+#LD:SS-HD:SS  0.6220614  0.19279457 1.0513281 0.0012787 **
+
+  #Low density plants differed between saltwater and freshwater spray
+  #Salt-sprayed plants differed between high and low densities
 
 #********************
 ##Response Variable: Chl.mean
@@ -2980,6 +3020,16 @@ ggplot(data=GHpdF2, aes(x=DTRTMT, y=PrpnPD, group=Zone, shape=Zone)) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
+aovpdzd  <- aov(PrpnPD~Zone:DTRTMT, data=GHexp)
+TukeyHSD(aovpdzd)
+  #             diff         lwr        upr     p adj
+#2:HD-1:HD -0.16306611 -0.37123171 0.04509949 0.1808924
+#1:LD-1:HD -0.08625421 -0.33255907 0.16005065 0.8013594
+#2:LD-1:HD  0.01389816 -0.23240670 0.26020302 0.9988857
+#1:LD-2:HD  0.07681190 -0.16949296 0.32311676 0.8509506
+#2:LD-2:HD  0.17696427 -0.06934059 0.42326914 0.2484568
+#2:LD-1:LD  0.10015237 -0.17913109 0.37943583 0.7896851
+
 #*****************************
 #data summary
 write.table(GHR0dd, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE)
@@ -3229,5 +3279,22 @@ ggplot(data=GHexp, aes(x=sqrtTFC, y=DDFLWF, group=Zone, colour=Zone)) +
         axis.text.y  = element_text(size=18, face="bold"))
 
 
-
 #******************************
+#ANCOVA
+#******************************
+
+lmacfcfrz  <- lm(sqrtTFC~Zone*Cot.FR, data=GHexp, na.action="na.omit")
+lmacfcfrzb  <- update(lmacfcfrz,~.-Zone:Cot.FR)
+anova(lmacfcfrzb, lmacfcfrz) #Zone:Cotfr not sig p=0.98 F=0.0007
+lmacfcfrzc  <- update(lmacfcfrzb,~.-Zone)
+anova(lmacfcfrzc, lmacfcfrzb) #Zone not sig p=0.77 F=0.082
+lmacfcfrzd  <- update(lmacfcfrzb,~.-Cot.FR)
+anova(lmacfcfrzd, lmacfcfrzb) #Cot.FR not sig p=0.77 F=0.082
+
+lmacfcfrd  <- lm(sqrtTFC~DTRTMT*Cot.FR, data=GHexp, na.action="na.omit")
+lmacfcfrdb  <- update(lmacfcfrd,~.-DTRTMT:Cot.FR)
+anova(lmacfcfrdb, lmacfcfrd) #D:Cotfr is sig p=0.99 F=0.0001
+lmacfcfrs  <- lm(sqrtTFC~SSTRTMT*Cot.FR, data=GHexp, na.action="na.omit")
+lmacfcfrsb  <- update(lmacfcfrs,~.-SSTRTMT:Cot.FR)
+anova(lmacfcfrsb, lmacfcfrs) #SS:Cotfr is sig p=0.67 F=0.19
+
