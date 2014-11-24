@@ -1380,6 +1380,9 @@ lmeddaa <- lmer(DDFLWF~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpR0)
 anova(lmedd, lmedda) #p=0.035 chisq=4.42 AIC=1114.6* AICa=1117.1, site is sig
 anova(lmedd, lmeddaa) #p=0.072 chisq=3.22 AICaa=1115.9, tote is marginally non sig
 anova(lmedd, lmeddaaa) #p=0.88 chisq=0.25 AICaa=1118.4, zone is not sig
+0.5*(1-pchisq(4.42, 1)) #=0.018 *
+0.5*(1-pchisq(3.22, 1)) #=0.036 *
+0.5*((1-pchisq(0.25, 1))+(1-pchisq(0.25, 2))) #=0.75
 lmdd <- lm(DDFLWF~Zone*DTRTMT*SSTRTMT, data=GHexpR0)
 x <- -2*logLik(lmdd, REML=T) +2*logLik(lmedd, REML=T)
 x
@@ -1526,6 +1529,9 @@ lmenlaa <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmenl, lmenla) #p=0.0049 chisq=7.93 AIC=2475.9* AICa=2481.8, site is sig
 anova(lmenl, lmenlaa) #p=1 chisq=0 AICaa=2473.9*, tote not sig
 anova(lmenl, lmenlaaa) #p=0.97 chisq=0.23 AICaa=2479.7, zone not sig
+0.5*(1-pchisq(7.93, 1)) #=0.0024 *
+0.5*(1-pchisq(0, 1)) #=0.5
+0.5*((1-pchisq(0.23, 1))+(1-pchisq(0.23, 2))) #=0.76
 lmnl <- lm(rankNewL.D~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmnl, REML=T) +2*logLik(lmenl, REML=T)
 x
@@ -1662,6 +1668,9 @@ lmecfraa <- lmer(Cot.FR~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmecfr, lmecfra) #p=1 chisq=0 AIC=1197.6 AICa=1195.6*, site not sig
 anova(lmecfr, lmecfraa) #p=0.71 chisq=0.13 AICaa=1195.7, tote not sig
 anova(lmecfr, lmecfraaa) #p=0.29 chisq=3.73 AICaa=1198.0, zone not sig
+0.5*(1-pchisq(0, 1)) #=0.5 
+0.5*(1-pchisq(0.13, 1)) #=0.36
+0.5*((1-pchisq(3.73, 1))+(1-pchisq(3.73, 2))) #=0.104
 lmcfr <- lm(Cot.FR~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmcfr, REML=T) +2*logLik(lmecfr, REML=T)
 x
@@ -1806,6 +1815,9 @@ anova(lmecgr, lmecgraaa) #p=0.0066 chisq=12.24 AIC= -492.55, zone is sig, BUT ca
 #                 Model failed to converge with max|grad| = 0.380908 (tol = 0.002)
 #                2: In checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv,  :
 #                                  Model failed to converge: degenerate  Hessian with 1 negative eigenvalues
+0.5*(1-pchisq(3.33, 1)) #=0.034 *
+0.5*(1-pchisq(8.53, 1)) #=0.0017 **
+0.5*((1-pchisq(12.24, 1))+(1-pchisq(12.24, 2))) #=0.0013 see above!!!
 lmcgr <- lm(Cot.GR~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmcgr, REML=T) +2*logLik(lmecgr, REML=T)
 x
@@ -1967,7 +1979,10 @@ lmetfa <- lmer(sqrtTFC~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
 lmetfaa <- lmer(sqrtTFC~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmetf, lmetfa) #p=1 chisq=0 AIC=532.24 AICa=530.24*, site not sig
 anova(lmetf, lmetfaa) #p=0.019 chisq=5.46 AICaa=535.70, tote is sig
-anova(lmetf, lmetfaaa) #p=0.14 chisq=5.46 AICaa=536.24, zone not sig
+anova(lmetf, lmetfaaa) #p=1 chisq=0 AICaa=536.24, zone not sig
+0.5*(1-pchisq(0, 1)) #=0.5 
+0.5*(1-pchisq(5.46, 1)) #=0.0097 **
+0.5*((1-pchisq(0, 1))+(1-pchisq(0, 2))) #=1.0
 lmtf <- lm(sqrtTFC~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmtf, REML=T) +2*logLik(lmetf, REML=T)
 x
@@ -2148,6 +2163,9 @@ lmebraa <- lmer(sqrtBR.T~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmebr, lmebra) #p=1 chisq=0 AIC=570.38 AICa=568.38*, site not sig
 anova(lmebr, lmebraa) #p=1 chisq=0 AICaa=568.38*, tote not sig
 anova(lmebr, lmebraaa) #p=1.0 chisq=0.0027 AICaa=574.37, zone not sig
+0.5*(1-pchisq(0, 1)) #=0.5 
+0.5*(1-pchisq(0, 1)) #=0.5 
+0.5*((1-pchisq(0.0027, 1))+(1-pchisq(0.0027, 2))) #=0.98
 lmbr <- lm(sqrtBR.T~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmbr, REML=T) +2*logLik(lmebr, REML=T)
 x
@@ -2314,6 +2332,9 @@ lmechlmaa <- lmer(Chl.mean~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmechlm, lmechlma) #p=0.55 chisq=0.35 AIC=1306.1 AICa=1304.5*, site not sig
 anova(lmechlm, lmechlmaa) #p=0.15 chisq=2.107 AICaa=1306.2, tote not sig
 anova(lmechlm, lmechlmaaa) #p=0.99 chisq=0.013 AICaa=1310.1, zone not sig
+0.5*(1-pchisq(0.35, 1)) #=0.28 
+0.5*(1-pchisq(2.107, 1)) #=0.073 
+0.5*((1-pchisq(0.013, 1))+(1-pchisq(0.013, 2))) #=0.95
 lmchlm <- lm(Chl.mean~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmchlm, REML=T) +2*logLik(lmechlm, REML=T)
 x
@@ -2474,6 +2495,9 @@ lmesdaa <- lmer(rankStemD.Diff~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpsdno1)
 anova(lmesd, lmesda) #p=0.0072 chisq=7.22 AIC=2467.1* AICa=2472.3, site is sig
 anova(lmesd, lmesdaa) #p-0.15 chisq=2.019 AICaa=2467.2, tote not sig
 anova(lmesd, lmesdaaa) #p=1.0 chisq=0.0008 AICaa=2471.1, zone not sig
+0.5*(1-pchisq(7.22, 1)) #=0.0036 
+0.5*(1-pchisq(2.019, 1)) #=0.078 
+0.5*((1-pchisq(0.0008, 1))+(1-pchisq(0.0008, 2))) #=0.99
 lmsd <- lm(rankStemD.Diff~Zone*DTRTMT*SSTRTMT, data=GHexpsdno1)
 x <- -2*logLik(lmsd, REML=T) +2*logLik(lmesd, REML=T)
 x
@@ -2626,6 +2650,9 @@ lmenfaa <- lmer(Node.F~Zone*DTRTMT*SSTRTMT+Replant+(1|Site), data=GHexp)
 anova(lmenf, lmenfa) # p=0.543 chisq=0.37 AIC=735.86 AICa=734.23*, site not sig
 anova(lmenf, lmenfaa) #p=0.12 chisq=2.47 AICaa=736.33, tote not sig
 anova(lmenf, lmenfaaa) #p=0.57 chisq=1.11 AICaa=738.74, zone not sig
+0.5*(1-pchisq(0.37, 1)) #=0.27 
+0.5*(1-pchisq(2.47, 1)) #=0.058 
+0.5*((1-pchisq(1.11, 1))+(1-pchisq(1.11, 2))) #=0.43
 lmnf <- lm(Node.F~Zone*DTRTMT*SSTRTMT+Replant, data=GHexp)
 x <- -2*logLik(lmnf, REML=T) +2*logLik(lmenf, REML=T)
 x
@@ -2800,6 +2827,9 @@ lmewcaa <- lmer(WatC~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexpwcno1)
 anova(lmewc, lmewca) #p=<0.0001 chisq=20.302 AIC= -629.92* AICa= -611.62, site is sig
 anova(lmewc, lmewcaa) #p=1 chisq=0 AICaa= -631.92*, tote not sig
 anova(lmewc, lmewcaaa) #p=0.87 chisq=0.27 AICaaa= -626.19, zone not sig
+0.5*(1-pchisq(20.302, 1)) #<0.0001 
+0.5*(1-pchisq(0, 1)) #=0.5 
+0.5*((1-pchisq(0.27, 1))+(1-pchisq(0.27, 2))) #=0.74
 lmwc <- lm(WatC~Zone*DTRTMT*SSTRTMT, data=GHexpwcno1)
 x <- -2*logLik(lmwc, REML=T) +2*logLik(lmewc, REML=T)
 x
@@ -2950,6 +2980,9 @@ lmepdaa <- lmer(PrpnPD~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
 anova(lmepd, lmepda) #p=0.42 chisq=0.64 AIC=323.09 AICa=321.73*, site not sig
 anova(lmepd, lmepdaa) #p=0.44 chisq=0.59 AICaa=321.68*, tote not sig
 anova(lmepd, lmepdaaa) #p=0.85 chisq=0.33 AICaa=326.76, zone not sig
+0.5*(1-pchisq(0.64, 1)) #0.21 
+0.5*(1-pchisq(0.59, 1)) #=0.22 
+0.5*((1-pchisq(0.33, 1))+(1-pchisq(0.33, 2))) #=0.707
 lmpd <- lm(PrpnPD~Zone*DTRTMT*SSTRTMT, data=GHexp)
 x <- -2*logLik(lmpd, REML=T) +2*logLik(lmepd, REML=T)
 x
