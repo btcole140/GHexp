@@ -3313,21 +3313,67 @@ ggplot(data=GHexp, aes(x=sqrtTFC, y=DDFLWF, group=Zone, colour=Zone)) +
 
 
 #******************************
-#ANCOVA
+#ANCOVA like analysis
 #******************************
 
-lmacfcfrz  <- lm(sqrtTFC~Zone*Cot.FR, data=GHexp, na.action="na.omit")
-lmacfcfrzb  <- update(lmacfcfrz,~.-Zone:Cot.FR)
-anova(lmacfcfrzb, lmacfcfrz) #Zone:Cotfr not sig p=0.98 F=0.0007
-lmacfcfrzc  <- update(lmacfcfrzb,~.-Zone)
-anova(lmacfcfrzc, lmacfcfrzb) #Zone not sig p=0.77 F=0.082
-lmacfcfrzd  <- update(lmacfcfrzb,~.-Cot.FR)
-anova(lmacfcfrzd, lmacfcfrzb) #Cot.FR not sig p=0.77 F=0.082
+#lmetfFR, 85, 127, 151, 163, 193
+lmetfF <- lmer(sqrtTFC~DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexpna)
+lmetfFR  <- resid(lmetfF)
+lmAtfRsig  <- lm(lmetfFR~Cot.FR*sqrtBR.T*DDFLWF, data=GHexpna)
+lmAtfRsigb  <- update(lmAtfRsig,~.-Cot.FR:sqrtBR.T:DDFWLF)
+anova(lmAtfRsigb, lmAtfRsig) #3way p= f=0
+lmAtfRsigc  <- update(lmAtfRsigb,~.-Cot.FR:sqrtBR.T)
+anova(lmAtfRsigc, lmAtfRsigb) #cot.fr p=0.93 f=0.0077
+lmAtfRsigd  <- update(lmAtfRsigb,~.-Cot.FR:DDFWLF)
+anova(lmAtfRsigd, lmAtfRsigb) #cot.fr p= f=0
+lmAtfRsige  <- update(lmAtfRsigb,~.-sqrtBR.T:DDFWLF)
+anova(lmAtfRsige, lmAtfRsigb) #cot.fr p= f=0
+lmAtfRsig  <- lm(lmetfFR~Cot.FR+sqrtBR.T+DDFLWF, data=GHexpna)
+lmAtfRsig2  <- update(lmAtfRsig,~.-Cot.FR)
+anova(lmAtfRsig2, lmAtfRsig) #cot.fr p=<0.0001 f=17.78
+lmAtfRsig3  <- update(lmAtfRsig,~.-sqrtBR.T)
+anova(lmAtfRsig3, lmAtfRsig) #br.t p=<0.0001 f=16.021
+lmAtfRsig4  <- update(lmAtfRsig,~.-DDFLWF)
+anova(lmAtfRsig4, lmAtfRsig) #ddflwf p=<0.0001 f=19.69
+lmAtfRsigF  <- lm(lmetfFR~Cot.FR+sqrtBR.T+DDFLWF, data=GHexpna)
+summary(lmAtfRsigF)
+#intercept= -1.026, cotfr est=0.027, brt est=0.16, ddflwf est=0.011
+#R^2=0.27, F=22.66[3, 174], p=<0.0001
 
-lmacfcfrd  <- lm(sqrtTFC~DTRTMT*Cot.FR, data=GHexp, na.action="na.omit")
-lmacfcfrdb  <- update(lmacfcfrd,~.-DTRTMT:Cot.FR)
-anova(lmacfcfrdb, lmacfcfrd) #D:Cotfr is sig p=0.99 F=0.0001
-lmacfcfrs  <- lm(sqrtTFC~SSTRTMT*Cot.FR, data=GHexp, na.action="na.omit")
-lmacfcfrsb  <- update(lmacfcfrs,~.-SSTRTMT:Cot.FR)
-anova(lmacfcfrsb, lmacfcfrs) #SS:Cotfr is sig p=0.67 F=0.19
+names(GHexp)
+#sqrtTFC=66, Cot.FR=26, sqrtBR.T=69, DDFLWF=21
+GHexpna <- GHexp[complete.cases(GHexp[,c(66, 26, 69, 21)]),]
+pcor(GHexpna[,c(66, 26, 69, 21)], method="pearson")
+  #$estimate
+  #           sqrtTFC      Cot.FR    sqrtBR.T      DDFLWF
+  #sqrtTFC  1.0000000  0.25365361  0.35041802  0.40365857
+  #Cot.FR   0.2536536  1.00000000 -0.14391442 -0.01681136
+  #sqrtBR.T 0.3504180 -0.14391442  1.00000000  0.07861695
+  #DDFLWF   0.4036586 -0.01681136  0.07861695  1.00000000
 
+  #$p.value
+  #            sqrtTFC       Cot.FR     sqrtBR.T       DDFLWF
+  #sqrtTFC  0.000000e+00 0.0005420869 8.004444e-07 5.890626e-09
+  #Cot.FR   5.420869e-04 0.0000000000 5.506903e-02 8.244786e-01
+  #sqrtBR.T 8.004444e-07 0.0550690339 0.000000e+00 2.982245e-01
+  #DDFLWF   5.890626e-09 0.8244786132 2.982245e-01 0.000000e+00
+
+
+ggplot(data=GHexp, aes(x=sqrtTFC, y=Cot.FR, group=TRTMT, colour=TRTMT)) +
+  geom_point(size=4, position=position_dodge(0.1))+
+  geom_smooth(aes(colour=TRTMT),method=lm, se=FALSE, fullrange=T)+
+  scale_colour_manual(name="Treatment", breaks=c("1", "2", "3", "4"), 
+                      labels=c("Low:Freshwater","High:Freshwater", "Low:Saltwater", 
+                               "High:Saltwater"),
+                      values=c("#CCCCCC", "#999999", "#333333", "#000000")) +
+  xlab(expression(bold(sqrt(Lifetime~Fitness)))) + ylab("Stem Length (cm)") +
+  ggtitle("TFC~Cot.FR by Treatment") +
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(strip.text.x = element_text(size=20, face="bold"))+
+  theme(strip.text.y = element_text(size=20, face="bold")) +
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
