@@ -1522,13 +1522,13 @@ anova(lmnlRx, lmnlR) #Replant not significant p=0.894 F=0.112
 
 
 #lmer vs lm
-lmenlaaa <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexp)
-lmenl <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp)
-lmenla <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp)
-lmenlaa <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp)
+lmenlaaa <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1+Zone|Site), data=GHexp, na.action="na.omit")
+lmenl <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexp, na.action="na.omit")
+lmenla <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Tote), data=GHexp, na.action="na.omit")
+lmenlaa <- lmer(rankNewL.D~Zone*DTRTMT*SSTRTMT+(1|Site), data=GHexp, na.action="na.omit")
 anova(lmenl, lmenla) #p=0.0049 chisq=7.93 AIC=2475.9* AICa=2481.8, site is sig
 anova(lmenl, lmenlaa) #p=1 chisq=0 AICaa=2473.9*, tote not sig
-anova(lmenl, lmenlaaa) #p=0.97 chisq=0.23 AICaa=2479.7, zone not sig
+anova(lmenl, lmenlaaa) #p=0.89 chisq=0.23 AICaa=2479.7, zone not sig
 0.5*(1-pchisq(7.93, 1)) #=0.0024 *
 0.5*(1-pchisq(0, 1)) #=0.5
 0.5*((1-pchisq(0.23, 1))+(1-pchisq(0.23, 2))) #=0.76
