@@ -1872,6 +1872,7 @@ qqline(lmecgrFR) #lm: raw is good
 GHcgrF <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 GHcgrFa <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("DTRTMT")) 
 GHcgrFb <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "Zone")) 
+GHcgrFc <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "Site", "Zone")) 
 GHcgrF2 <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Zone")) 
 ggplot(data=GHcgrF2, aes(x=SSTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
   geom_errorbar(aes(ymin=Cot.GR-se, ymax=Cot.GR+se), width=0.1, position=position_dodge(0.1)) +
@@ -3109,6 +3110,8 @@ write.table(GHcgrFb, file = "GHexp variable summary.csv", sep = ",", col.names =
 write.table(GHchlmFa, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
 write.table(GHchlmFb, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
 
+write.table(GHcgrFc, file = "GHexp variable summary.csv", sep = ",", col.names = TRUE, row.names = FALSE, append = TRUE)
+
 
 #*****************************
 #Correlations
@@ -3377,3 +3380,29 @@ ggplot(data=GHexp, aes(x=sqrtTFC, y=Cot.FR, group=TRTMT, colour=TRTMT)) +
         axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
+
+
+lmAtfsig  <- lm(sqrtTFC~Cot.FR*sqrtBR.T*DDFLWF, data=GHexpna)
+lmAtfsigR  <- resid(lmAtfsig)
+lmetfR <- lmer(lmAtfsigR~Zone*DTRTMT*SSTRTMT+(1|Tote)+(1|Site), data=GHexpna)
+lmetfRb  <- update(lmetfR,~.-Zone:DTRTMT:SSTRTMT)
+anova(lmetfRb, lmetfR) #3way not sig p=0.902 chisq=0.015
+lmetfRc  <- update(lmetfRb,~.-Zone:DTRTMT)
+anova(lmetfRc, lmetfRb) #Zone:D not sig p=0.36 chisq=0.83
+lmetfRd  <- update(lmetfRb,~.-Zone:SSTRTMT)
+anova(lmetfRd, lmetfRb) #Zone:SS not sig p=0.56 chisq=0.34
+lmetfRe  <- update(lmetfRb,~.-DTRTMT:SSTRTMT)
+anova(lmetfRe, lmetfRb) #D:SS not sig p=0.26 chisq=1.28
+lmetfR2 <- lmer(lmAtfsigR~Zone+DTRTMT+SSTRTMT+(1|Tote)+(1|Site), data=GHexpna)
+lmetfR2b  <- update(lmetfR2,~.-Zone)
+anova(lmetfR2b, lmetfR2) #Zone not sig p=0.38 chisq=0.76
+lmetfR2c  <- update(lmetfR2,~.-DTRTMT)
+anova(lmetfR2c, lmetfR2) #D not sig p=0.33 chisq=0.95
+lmetfR2d  <- update(lmetfR2,~.-SSTRTMT)
+anova(lmetfR2d, lmetfR2) #SS not sig p=0.93 chisq=0.0068
+lmetfRF <- lmer(lmAtfsigR~Zone+DTRTMT+SSTRTMT+(1|Tote)+(1|Site), data=GHexpna)
+summary(lmetfRF)
+#random: tote var=0.036, site var=0.000, resid=0.27
+#fixed: intercept= -0.077, zone est=0.065, d est=0.11, s est= -0.005
+#none of the factors are sig after accounting for variation in fitness
+  #explained by plant traits (stem length, branches, and flowering duration)
