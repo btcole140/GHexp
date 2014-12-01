@@ -2913,6 +2913,25 @@ ggplot(data=GHexpwcno1, aes(x=TRTMT, y=PrpnPD))+
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 #NOTE: not much differences between treatments or zones
+
+ggplot(data=GHexpwcno1, aes(x=TRTMT, y=PrpnPD))+
+  geom_boxplot(aes(fill=Zone), width=0.8, position="dodge")+ 
+  ylab("Seed Ratio (Proximal:Distal)") +
+  scale_x_discrete(name="Spray:Density Treatment", breaks=c("1", "2", "3", "4"),
+                   labels=c("Fresh:Low", "Fresh:High", "Salt:Low", "Salt:High"))+
+  scale_fill_manual(name="Zone",
+                    breaks=c("1", "2"),
+                    labels=c("Beach", "Dune"),
+                    values=c("#FFFFFF", "#000000"))+
+  ggtitle("Seed Ratio by Treatment")+
+  theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
+                     legend.text=element_text(face="bold", size=18), 
+                     legend.title=element_text(face="bold", size=18))+
+  theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
+        axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
+  theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
+        axis.text.y  = element_text(size=18, face="bold"))
+
 ggplot(data=GHexp, aes(x=TRTMT, y=PrpnPD))+
   geom_point(aes(shape=Zone), width=0.8, position="dodge")+ 
   ylab("Seed Ratio") +
