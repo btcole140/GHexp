@@ -3175,7 +3175,7 @@ par(mfrow=c(1,1))
 hist(lmcfrddR)
 
 #brt~newl.d
-lmbrnl  <- lm(rankBR.T~rankNewL.D, data=GHexp, na.action="na.omit")
+lmbrnl  <- lm(sqrtBR.T~rankNewL.D, data=GHexp, na.action="na.omit")
 lmbrnlR  <- resid(lmbrnl)
 par(mfrow=c(2,2))
 plot(lmbrnl)
@@ -3205,7 +3205,7 @@ cor.test(GHexp$sqrtTFC, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=
 cor.test(GHexp$Cot.FR, GHexp$sqrtBR.T, method="pearson", na.action="na.omit") #r=0.0012 p=0.99
 cor.test(GHexp$Cot.FR, GHexp$rankNewL.D, method="pearson", na.action="na.omit") #r= -0.15 p=0.039 *
 cor.test(GHexp$Cot.FR, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.084 p=0.26
-cor.test(GHexp$rankBR.T, GHexp$rankNewL.D, method="pearson", na.action="na.omit") #r=0.45 p=<0.0001 ***
+cor.test(GHexp$sqrtBR.T, GHexp$rankNewL.D, method="pearson", na.action="na.omit") #r=0.45 p=<0.0001 ***
 cor.test(GHexp$sqrtBR.T, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.25 p=0.00067 **
 cor.test(GHexp$rankNewL.D, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.077 p=0.309
 
