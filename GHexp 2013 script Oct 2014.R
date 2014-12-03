@@ -1432,6 +1432,11 @@ hist(lmeddFR) #okay, skew left
 qqnorm(lmeddFR, main="Q-Q plot for residuals") 
 qqline(lmeddFR) #okay, has tails at each end
 
+ddn <- tapply(GHexpR0$DDFLWF, list(GHexpR0$Zone, GHexpR0$Site), length)
+ddmean <- tapply(GHexpR0$DDFLWF, list(GHexpR0$Zone, GHexpR0$Site), mean)
+ddsd <- tapply(GHexpR0$DDFLWF, list(GHexpR0$Zone, GHexpR0$Site), sd)
+ddCV <- (ddsd/ddmean)*100
+
 GHR0ddF <- summarySE(GHexpR0, measurevar="DDFLWF", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 GHR0ddF2 <- summarySE(GHexpR0, measurevar="DDFLWF", groupvars=c("Site", "Zone")) 
 ggplot(data=GHR0ddF2, aes(x=Zone, y=DDFLWF, group=Site, shape=Site)) +
@@ -1442,6 +1447,9 @@ ggplot(data=GHR0ddF2, aes(x=Zone, y=DDFLWF, group=Site, shape=Site)) +
                        labels=c("Darnley", "Martinique")) +
   xlab("Zone") + ylab("Flowering Duration (days)") +
   ggtitle("Mean Flowering Duration by Treatment R0") +
+  annotate("text", x=c(0.85, 2.20, 0.85, 2.20), 
+           y=c(24.43, 18.034, 31.044, 27.108), 
+           label=paste("n=",ddn)) +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -1583,6 +1591,11 @@ hist(lmenlFR) #okay
 qqnorm(lmenlFR, main="Q-Q plot for residuals") 
 qqline(lmenlFR) #not the best, stepwise pattern and tails
 
+nln <- tapply(GHexp$NewL.D, list(GHexp$SSTRTMT, GHexp$Site), length)
+nlmean <- tapply(GHexp$NewL.D, list(GHexp$SSTRTMT, GHexp$Site), mean)
+nlsd <- tapply(GHexp$NewL.D, list(GHexp$SSTRTMT, GHexp$Site), sd)
+nlCV <- (nlsd/nlmean)*100
+
 GHnlF <- summarySE(GHexp, measurevar="rankNewL.D", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 GHnlF2 <- summarySE(GHexp, measurevar="rankNewL.D", groupvars=c("SSTRTMT", "Site")) 
 ggplot(data=GHnlF2, aes(x=SSTRTMT, y=rankNewL.D, group=Site, shape=Site)) +
@@ -1592,6 +1605,9 @@ ggplot(data=GHnlF2, aes(x=SSTRTMT, y=rankNewL.D, group=Site, shape=Site)) +
                        breaks=c("D", "M"),
                        labels=c("Darnley", "Martinique")) +
   xlab("Spray") + ylab("Ranked Production of New Leaves \n(leaves/day)") +
+  annotate("text", x=c(0.85, 0.85, 2.20, 2.20), 
+           y=c(100.40, 83.39, 153.68, 112.83), 
+           label=paste("n=",nln)) +
   ggtitle("Mean Ranked New Leaves/day by Treatment") +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
@@ -1603,6 +1619,7 @@ ggplot(data=GHnlF2, aes(x=SSTRTMT, y=rankNewL.D, group=Site, shape=Site)) +
   scale_x_discrete(labels=c("Fresh", "Salt")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
+
 
 #********************
 ##Response Variable: Cot.FR
@@ -1720,6 +1737,11 @@ hist(lmecfrFR) #lm: raw good
 qqnorm(lmecfrFR, main="Q-Q plot for residuals") 
 qqline(lmecfrFR) #lm: raw is good
 
+cfrn <- tapply(GHexp$Cot.FR, list(GHexp$SSTRTMT, GHexp$DTRTMT, GHexp$Zone), length)
+cfrmean <- tapply(GHexp$Cot.FR, list(GHexp$SSTRTMT, GHexp$DTRTMT, GHexp$Zone), mean)
+cfrsd <- tapply(GHexp$Cot.FR, list(GHexp$SSTRTMT, GHexp$DTRTMT, GHexp$Zone), sd)
+cfrCV <- (cfrsd/cfrmean)*100
+
 GHcfrF <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone"))
 GHcfrFa <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("SSTRTMT")) 
 GHcfrFb <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("DTRTMT")) 
@@ -1734,6 +1756,9 @@ ggplot(data=GHcfrF2, aes(x=DTRTMT, y=Cot.FR, group=Zone, shape=Zone)) +
                        labels=c("Beach", "Dune")) +
   xlab("Density") + ylab("Stem Length(cm)") +
   ggtitle("Mean Stem Length by Treatment") +
+  annotate("text", x=c(0.65, 0.65, 2.40, 2.40, 0.65, 0.65, 2.40, 2.40), 
+           y=c(22.78, 18.39, 25.47, 21.62, 19.44, 17.63, 19.57, 19.10), 
+           label=paste("n=",cfrn)) +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -1744,6 +1769,8 @@ ggplot(data=GHcfrF2, aes(x=DTRTMT, y=Cot.FR, group=Zone, shape=Zone)) +
   scale_x_discrete(labels=c("High", "Low")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
+
+
 
 #********************
 ##Response Variable: Cot.GR
@@ -2033,14 +2060,22 @@ hist(lmetfFR) #lm: sqrt good
 qqnorm(lmetfFR, main="Q-Q plot for residuals") 
 qqline(lmetfFR) #lm: sqrt is good
 
+tfn <- tapply(GHexp$TFC[!is.na(GHexp$TFC)], list(GHexp$SSTRTMT[!is.na(GHexp$TFC)], GHexp$DTRTMT[!is.na(GHexp$TFC)]), length)
+tfmean <- tapply(GHexp$TFC, list(GHexp$SSTRTMT, GHexp$DTRTMT), mean)
+tfsd <- tapply(GHexp$TFC, list(GHexp$SSTRTMT, GHexp$DTRTMT), sd)
+tfCV <- (tfsd/tfmean)*100
+
 GHtfF <- summarySE(GHexp, measurevar="sqrtTFC", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 GHtfF2 <- summarySE(GHexp, measurevar="sqrtTFC", groupvars=c("SSTRTMT", "DTRTMT")) 
 ggplot(data=GHtfF2, aes(x=DTRTMT, y=sqrtTFC, group=SSTRTMT)) +
-  geom_errorbar(aes(ymin=sqrtTFC-se, ymax=sqrtTFC+se), width=0.112.0, position=position_dodge(0.1)) +
+  geom_errorbar(aes(ymin=sqrtTFC-se, ymax=sqrtTFC+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   facet_grid(~SSTRTMT, labeller=ss_labeller) +
   xlab("Density") + ylab(expression(bold(sqrt(Lifetime~Fitness)))) +
   ggtitle("Mean sqrt Total Fruit by Treatment") +
+  annotate("text", x=c(0.65, 0.65, 2.40, 2.40), 
+           y=c(2.32, 1.68, 2.31, 2.58), 
+           label=paste("n=",tfn)) +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -2064,6 +2099,10 @@ TukeyHSD(aovtfds)
 
   #High density plants differed between saltwater and freshwater spray
   #Salt-sprayed plants differed between high and low densities
+
+
+
+
 
 #********************
 ##Response Variable: BR.T
@@ -2216,14 +2255,22 @@ hist(lmebrFR) #lme: sqrt best, skew left
 qqnorm(lmebrFR, main="Q-Q plot for residuals") 
 qqline(lmebrFR) #lme: none are good... go with sqrt, long right tail and stepwise pattern
 
+brn <- tapply(GHexp$BR.T, list(GHexp$SSTRTMT, GHexp$DTRTMT), length)
+brmean <- tapply(GHexp$BR.T, list(GHexp$SSTRTMT, GHexp$DTRTMT), mean)
+brsd <- tapply(GHexp$BR.T, list(GHexp$SSTRTMT, GHexp$DTRTMT), sd)
+brCV <- (brsd/brmean)*100
+
 GHbrF <- summarySE(GHexp, measurevar="sqrtBR.T", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 GHbrF2 <- summarySE(GHexp, measurevar="sqrtBR.T", groupvars=c("SSTRTMT", "DTRTMT")) 
-ggplot(data=GHbF2r, aes(x=DTRTMT, y=sqrtBR.T, group=SSTRTMT)) +
+ggplot(data=GHbrF2, aes(x=DTRTMT, y=sqrtBR.T, group=SSTRTMT)) +
   geom_errorbar(aes(ymin=sqrtBR.T-se, ymax=sqrtBR.T+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   facet_grid(~SSTRTMT, labeller=ss_labeller) +
   xlab("Density") + ylab(expression(bold(sqrt(Total~Branches)))) +
   ggtitle("Mean sqrt Total Branches by Treatment") +
+  annotate("text", x=c(0.65, 0.65, 2.40, 2.40), 
+           y=c(1.044, 1.36, 0.77, 1.98), 
+           label=paste("n=",brn)) +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -2247,6 +2294,9 @@ TukeyHSD(aovbrds)
 
   #Low density plants differed between saltwater and freshwater spray
   #Salt-sprayed plants differed between high and low densities
+
+
+
 
 #********************
 ##Response Variable: Chl.mean
@@ -2384,6 +2434,11 @@ hist(lmechlmFR) #lm: raw is good
 qqnorm(lmechlmFR, main="Q-Q plot for residuals") 
 qqline(lmechlmFR) #lm: raw is good
 
+clmn <- tapply(GHexp$Chl.mean[!is.na(GHexp$Chl.mean)], list(GHexp$SSTRTMT[!is.na(GHexp$Chl.mean)], GHexp$DTRTMT[!is.na(GHexp$Chl.mean)]), length)
+clmmean <- tapply(GHexp$Chl.mean, list(GHexp$SSTRTMT, GHexp$DTRTMT), mean)
+clmsd <- tapply(GHexp$Chl.mean, list(GHexp$SSTRTMT, GHexp$DTRTMT), sd)
+clmCV <- (clmsd/clmmean)*100
+
 GHchlmF <- summarySE(GHexp, measurevar="Chl.mean", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone"))
 GHchlmFa <- summarySE(GHexp, measurevar="Chl.mean", groupvars=c("SSTRTMT"))
 GHchlmFb <- summarySE(GHexp, measurevar="Chl.mean", groupvars=c("DTRTMT"))
@@ -2394,6 +2449,9 @@ ggplot(data=GHchlmF2, aes(x=DTRTMT, y=Chl.mean, group=SSTRTMT)) +
   facet_grid(~SSTRTMT, labeller=ss_labeller) +
   xlab("Density") + ylab("Mean Chlorophyll") +
   ggtitle("Mean Mean Chlorophyll by Treatment") +
+  annotate("text", x=c(0.65, 0.65, 2.40, 2.40), 
+           y=c(39.39, 32.57, 40.26, 35.79), 
+           label=paste("n=",clmn)) +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -2404,6 +2462,7 @@ ggplot(data=GHchlmF2, aes(x=DTRTMT, y=Chl.mean, group=SSTRTMT)) +
   scale_x_discrete(labels=c("High", "Low")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
+
 
 
 #********************
@@ -2547,6 +2606,13 @@ hist(lmesdFR) #lme: good
 qqnorm(lmesdFR, main="Q-Q plot for residuals") 
 qqline(lmesdFR) #lme: good
 
+sdn <- tapply(GHexpsdno1$StemD.Diff[!is.na(GHexpsdno1$StemD.Diff)], list(GHexpsdno1$SSTRTMT[!is.na(GHexpsdno1$StemD.Diff)], GHexpsdno1$Site[!is.na(GHexpsdno1$StemD.Diff)]), length)
+sdmean <- tapply(GHexpsdno1$StemD.Diff, list(GHexpsdno1$SSTRTMT, GHexpsdno1$DTRTMT), mean)
+sdsd <- tapply(GHexpsdno1$StemD.Diff, list(GHexpsdno1$SSTRTMT, GHexpsdno1$DTRTMT), sd)
+sdCV <- (sdsd/sdmean)*100
+
+
+
 GHsdF <- summarySE(GHexpsdno1, measurevar="rankStemD.Diff", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 GHsdF2 <- summarySE(GHexpsdno1, measurevar="rankStemD.Diff", groupvars=c("SSTRTMT", "Site")) 
 ggplot(data=GHsdF2, aes(x=SSTRTMT, y=rankStemD.Diff, group=Site, shape=Site)) +
@@ -2557,6 +2623,9 @@ ggplot(data=GHsdF2, aes(x=SSTRTMT, y=rankStemD.Diff, group=Site, shape=Site)) +
                        labels=c("Darnley", "Martinique")) +
   xlab("Spray") + ylab("Ranked Change in \nStem Diameter (cm)") +
   ggtitle("Mean Stem Diameter Diff. by Treatment") +
+  annotate("text", x=c(0.85, 2.20, 0.85, 2.20), 
+           y=c(99.37, 151.94, 80.34, 116.12), 
+           label=paste("n=",sdn)) +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -2567,6 +2636,7 @@ ggplot(data=GHsdF2, aes(x=SSTRTMT, y=rankStemD.Diff, group=Site, shape=Site)) +
   scale_x_discrete(labels=c("Fresh", "Salt")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
+
 
 
 #********************
@@ -2705,6 +2775,12 @@ hist(lmnfFR) #lm: raw great
 qqnorm(lmnfFR, main="Q-Q plot for residuals") 
 qqline(lmnfFR) #lm: raw good
 
+
+nfn <- tapply(GHexp$Node.F[!is.na(GHexp$Node.F)], list(GHexp$Zone[!is.na(GHexp$Node.F)]), length)
+nfmean <- tapply(GHexp$Node.F, list(GHexp$SSTRTMT, GHexp$DTRTMT), mean)
+nfsd <- tapply(GHexp$Node.F, list(GHexp$SSTRTMT, GHexp$DTRTMT), sd)
+nfCV <- (nfsd/nfmean)*100
+
 GHnfF <- summarySE(GHexp, measurevar="Node.F", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone"))
 GHnfF2 <- summarySE(GHexp, measurevar="Node.F", groupvars=c("Zone")) 
 ggplot(data=GHnfF2, aes(x=Zone, y=Node.F)) +
@@ -2712,6 +2788,9 @@ ggplot(data=GHnfF2, aes(x=Zone, y=Node.F)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
   xlab("Zone") + ylab("Total Stem Nodes") +
   ggtitle("Mean Total Stem Nodes by Treatment") +
+  annotate("text", x=c(0.85, 2.20), 
+           y=c(8.73, 8.082), 
+           label=paste("n=",nfn)) +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -2722,6 +2801,8 @@ ggplot(data=GHnfF2, aes(x=Zone, y=Node.F)) +
   scale_x_discrete(labels=c("Beach", "Dune")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
+
+
 
 
 ggplot(data=GHexp, aes(x=Zone, y=Node.F))+
@@ -2870,6 +2951,12 @@ summary(lmewcF)
 #random: tote var=0.0000089, site var=0.00069, resid=0.0025
 #fixed: intercept=0.182, SS est= -0.043
 
+wcn <- tapply(GHexp$WatC[!is.na(GHexp$WatC)], list(GHexp$SSTRTMT[!is.na(GHexp$WatC)], GHexp$Site[!is.na(GHexp$WatC)]), length)
+wcmean <- tapply(GHexp$WatC, list(GHexp$SSTRTMT, GHexp$DTRTMT), mean)
+wcsd <- tapply(GHexp$WatC, list(GHexp$SSTRTMT, GHexp$DTRTMT), sd)
+wcCV <- (wcsd/wcmean)*100
+
+
 GHwcF <- summarySE(GHexp, measurevar="WatC", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 GHwcF2 <- summarySE(GHexp, measurevar="WatC", groupvars=c("SSTRTMT", "Site")) 
 ggplot(data=GHwcF2, aes(x=SSTRTMT, y=WatC, group=Site, shape=Site)) +
@@ -2880,6 +2967,9 @@ ggplot(data=GHwcF2, aes(x=SSTRTMT, y=WatC, group=Site, shape=Site)) +
                        labels=c("Darnley", "Martinique")) +
   xlab("Spray") + ylab("Water Content (%)") +
   ggtitle("Mean Water Content by Treatment") +
+  annotate("text", x=c(0.85, 2.20, 0.85, 2.20), 
+           y=c(0.165, 0.12, 0.22, 0.16), 
+           label=paste("n=",wcn)) +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -2890,6 +2980,8 @@ ggplot(data=GHwcF2, aes(x=SSTRTMT, y=WatC, group=Site, shape=Site)) +
   scale_x_discrete(labels=c("Fresh", "Salt")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
+
+
 
 
 #********************
@@ -3052,6 +3144,11 @@ hist(lmepdFR) #lme: raw okay, skew left
 qqnorm(lmepdFR, main="Q-Q plot for residuals") 
 qqline(lmepdFR) #lme: not good, transform does not change plot..raw is best
 
+ssn <- tapply(GHexp$PrpnPD, list(GHexp$DTRTMT, GHexp$Zone), length)
+ssmean <- tapply(GHexp$PrpnPD, list(GHexp$DTRTMT, GHexp$Zone), mean)
+sssd <- tapply(GHexp$PrpnPD, list(GHexp$DTRTMT, GHexp$Zone), sd)
+ssCV <- (sssd/ssmean)*100
+
 GHpdF <- summarySE(GHexp, measurevar="PrpnPD", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 GHpdF2 <- summarySE(GHexp, measurevar="PrpnPD", groupvars=c("DTRTMT", "Zone")) 
 ggplot(data=GHpdF2, aes(x=DTRTMT, y=PrpnPD, group=Zone, shape=Zone)) +
@@ -3062,6 +3159,9 @@ ggplot(data=GHpdF2, aes(x=DTRTMT, y=PrpnPD, group=Zone, shape=Zone)) +
                        labels=c("Beach", "Dune")) +
   xlab("Density") + ylab("Seed Ratio (Proximal:Distal)") +
   ggtitle("Mean Seed Ratio by Treatment") +
+  annotate("text", x=c(0.85, 2.20, 0.85, 2.20), 
+           y=c(0.59, 0.502, 0.42, 0.602), 
+           label=paste("n=",ssn)) +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -3082,6 +3182,9 @@ TukeyHSD(aovpdzd)
 #1:LD-2:HD  0.07681190 -0.16949296 0.32311676 0.8509506
 #2:LD-2:HD  0.17696427 -0.06934059 0.42326914 0.2484568
 #2:LD-1:LD  0.10015237 -0.17913109 0.37943583 0.7896851
+
+
+
 
 #*****************************
 #data summary
