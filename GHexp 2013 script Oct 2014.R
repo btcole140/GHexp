@@ -1896,20 +1896,31 @@ hist(lmecgrFR) #lm: raw good
 qqnorm(lmecgrFR, main="Q-Q plot for residuals") 
 qqline(lmecgrFR) #lm: raw is good
 
+
+cgn <- tapply(GHexp$Cot.GR[!is.na(GHexp$Cot.GR)], list(GHexp$SSTRTMT[!is.na(GHexp$Cot.GR)], GHexp$DTRTMT[!is.na(GHexp$Cot.GR)], GHexp$Zone[!is.na(GHexp$Cot.GR)]), length)
+cgmean <- tapply(GHexp$Cot.GR, list(GHexp$SSTRTMT, GHexp$DTRTMT), mean)
+cgsd <- tapply(GHexp$Cot.GR, list(GHexp$SSTRTMT, GHexp$DTRTMT), sd)
+cgCV <- (cgsd/cgmean)*100
+
+
+
 GHcgrF <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 GHcgrFa <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("DTRTMT")) 
 GHcgrFb <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "Zone")) 
 GHcgrFc <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "Site", "Zone")) 
 GHcgrF2 <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Zone")) 
-ggplot(data=GHcgrF2, aes(x=SSTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
+ggplot(data=GHcgrF2, aes(x=DTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
   geom_errorbar(aes(ymin=Cot.GR-se, ymax=Cot.GR+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
-  facet_grid(~DTRTMT, labeller=d_labeller) +
+  facet_grid(~SSTRTMT, labeller=ss_labeller) +
   scale_shape_discrete(name  ="Zone",
                        breaks=c("1", "2"),
                        labels=c("Beach", "Dune")) +
-  xlab("Spray") + ylab("Stem Growth Rate (cm/day)") +
+  xlab("Density") + ylab("Stem Growth Rate (cm/day)") +
   ggtitle("Mean Stem GR by Treatment") +
+  annotate("text", x=c(0.65, 0.65, 2.40, 2.40, 0.65, 0.65, 2.40, 2.40), 
+           y=c(0.29, 0.18, 0.35, 0.21, 0.22, 0.14, 0.29, 0.24), 
+           label=paste("n=",cgn)) +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -1917,12 +1928,12 @@ ggplot(data=GHcgrF2, aes(x=SSTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
   theme(strip.text.y = element_text(size=20, face="bold")) +
   theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
         axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
-  scale_x_discrete(labels=c("Fresh", "Salt")) +
+  scale_x_discrete(labels=c("High", "Low")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
 
-aovcgrzs  <- aov(Cot.GR~Zone:SSTRTMT, data=GHexp)
+aovcgrzs  <- aov(Cot.GR~Site:Zone:SSTRTMT, data=GHexp)
 TukeyHSD(aovcgrzs)
   #           diff         lwr         upr     p adj
 #2:C-1:C   -0.05831061 -0.09968731 -0.01693391 0.0018653 **
@@ -1935,6 +1946,37 @@ TukeyHSD(aovcgrzs)
   #Dune plants differ from beach in freshwater-spray
   #Beach plants differ between freshwater and saltwater spray
   #Dune plants differ between freshwater and saltwater spray
+
+#$`Site:Zone:SSTRTMT`
+  #diff          lwr          upr     p adj
+#M:1:C-D:1:C    0.036108371 -0.031776051  0.103992792 0.7325681
+#D:2:C-D:1:C   -0.056715838 -0.126389823  0.012958148 0.2045094
+#M:2:C-D:1:C   -0.022393516 -0.090836850  0.046049819 0.9737894
+#D:1:SS-D:1:C  -0.086902741 -0.155346075 -0.018459406 0.0033529 ** D1 SS vs D1 C
+#M:1:SS-D:1:C  -0.107493399 -0.175936733 -0.039050064 0.0000779 ***
+#D:2:SS-D:1:C  -0.141325886 -0.210364495 -0.072287277 0.0000001 ***
+#M:2:SS-D:1:C  -0.080795673 -0.149239008 -0.012352339 0.0088582 **
+#D:2:C-M:1:C   -0.092824209 -0.160003886 -0.025644531 0.0008979 **
+#M:2:C-M:1:C   -0.058501887 -0.124404351  0.007400578 0.1229861
+#D:1:SS-M:1:C  -0.123011111 -0.188913576 -0.057108646 0.0000010 ***
+#M:1:SS-M:1:C  -0.143601769 -0.209504234 -0.077699305 0.0000000 *** M1 SS vs M1 C
+#D:2:SS-M:1:C  -0.177434257 -0.243954737 -0.110913776 0.0000000 ***
+#M:2:SS-M:1:C  -0.116904044 -0.182806509 -0.051001579 0.0000042 ***
+#M:2:C-D:2:C    0.034322322 -0.033422083  0.102066727 0.7785138
+#D:1:SS-D:2:C  -0.030186903 -0.097931308  0.037557503 0.8723165
+#M:1:SS-D:2:C  -0.050777561 -0.118521966  0.016966844 0.3013871
+#D:2:SS-D:2:C  -0.084610048 -0.152955815 -0.016264281 0.0047758 ** D2 SS vs D2 C
+#M:2:SS-D:2:C  -0.024079836 -0.091824241  0.043664570 0.9586978
+#D:1:SS-M:2:C  -0.064509225 -0.130987268  0.001968818 0.0642894 .
+#M:1:SS-M:2:C  -0.085099883 -0.151577926 -0.018621840 0.0029796 **
+#D:2:SS-M:2:C  -0.118932370 -0.186023127 -0.051841613 0.0000043 ***
+#M:2:SS-M:2:C  -0.058402158 -0.124880201  0.008075885 0.1315177
+#M:1:SS-D:1:SS -0.020590658 -0.087068701  0.045887385 0.9807879
+#D:2:SS-D:1:SS -0.054423145 -0.121513902  0.012667611 0.2082586
+#M:2:SS-D:1:SS  0.006107067 -0.060370976  0.072585110 0.9999930
+#D:2:SS-M:1:SS -0.033832487 -0.100923244  0.033258270 0.7826256
+#M:2:SS-M:1:SS  0.026697725 -0.039780318  0.093175768 0.9222914
+#M:2:SS-D:2:SS  0.060530212 -0.006560544  0.127620969 0.1103938
 
 #********************
 ##Response Variable: TFC
@@ -3240,95 +3282,21 @@ write.table(GHcgrFc, file = "GHexp variable summary.csv", sep = ",", col.names =
 #*****************************
 #variables to consider: tfc, cot.fr, br.t, newl.d, ddflwf
 
-#tfc~cot.fr
-lmfcfr  <- lm(sqrtTFC~Cot.FR, data=GHexp, na.action="na.omit")
-lmfcfrR  <- resid(lmfcfr)
-par(mfrow=c(2,2))
-plot(lmfcfr)
-par(mfrow=c(1,1))
-hist(lmfcfrR)
+hist(GHexp$sqrtTFC)
+hist(GHexp$Cot.FR)
+hist(GHexp$rankBR.T)
+hist(GHexp$rankNewL.D)
+hist(GHexp$DDFLWF)
 
-#tfc~br.t
-lmfbr  <- lm(sqrtTFC~sqrtBR.T, data=GHexp, na.action="na.omit")
-lmfbrR  <- resid(lmfbr)
-par(mfrow=c(2,2))
-plot(lmfbr)
-par(mfrow=c(1,1))
-hist(lmfbrR)
-
-#tfc~newl.d
-lmfnl  <- lm(sqrtTFC~rankNewL.D, data=GHexp, na.action="na.omit")
-lmfnlR  <- resid(lmfnl)
-par(mfrow=c(2,2))
-plot(lmfnl)
-par(mfrow=c(1,1))
-hist(lmfnlR)
-
-#tfc~ddflwf
-lmfdd  <- lm(sqrtTFC~DDFLWF, data=GHexp, na.action="na.omit")
-lmfddR  <- resid(lmfdd)
-par(mfrow=c(2,2))
-plot(lmfdd)
-par(mfrow=c(1,1))
-hist(lmfddR)
-
-#cotfr~br.t
-lmcfrbr  <- lm(Cot.FR~sqrtBR.T, data=GHexp, na.action="na.omit")
-lmcfrbrR  <- resid(lmcfrbr)
-par(mfrow=c(2,2))
-plot(lmcfrbr)
-par(mfrow=c(1,1))
-hist(lmcfrbrR)
-
-#cotfr~newl.d
-lmcfrnl  <- lm(Cot.FR~rankNewL.D, data=GHexp, na.action="na.omit")
-lmcfrnlR  <- resid(lmcfrnl)
-par(mfrow=c(2,2))
-plot(lmcfrnl)
-par(mfrow=c(1,1))
-hist(lmcfrnlR)
-
-#cotfr~ddflwf
-lmcfrdd  <- lm(Cot.FR~DDFLWF, data=GHexp, na.action="na.omit")
-lmcfrddR  <- resid(lmcfrdd)
-par(mfrow=c(2,2))
-plot(lmcfrdd)
-par(mfrow=c(1,1))
-hist(lmcfrddR)
-
-#brt~newl.d
-lmbrnl  <- lm(sqrtBR.T~rankNewL.D, data=GHexp, na.action="na.omit")
-lmbrnlR  <- resid(lmbrnl)
-par(mfrow=c(2,2))
-plot(lmbrnl)
-par(mfrow=c(1,1))
-hist(lmbrnlR)
-
-#brt~ddflwf
-lmbrdd  <- lm(sqrtBR.T~DDFLWF, data=GHexp, na.action="na.omit")
-lmbrddR  <- resid(lmbrdd)
-par(mfrow=c(2,2))
-plot(lmbrdd)
-par(mfrow=c(1,1))
-hist(lmbrddR)
-
-#newld~ddflwf
-lmnldd  <- lm(rankNewL.D~DDFLWF, data=GHexp, na.action="na.omit")
-lmnlddR  <- resid(lmnldd)
-par(mfrow=c(2,2))
-plot(lmnldd)
-par(mfrow=c(1,1))
-hist(lmnlddR)
-
-cor.test(GHexp$sqrtTFC, GHexp$Cot.FR, method="pearson", na.action="na.omit") #r=0.25 p=0.00048 **
-cor.test(GHexp$sqrtTFC, GHexp$sqrtBR.T, method="pearson", na.action="na.omit") #r=0.397 p=<0.0001 ***
+cor.test(GHexp$sqrtTFC, GHexp$Cot.FR, method="pearson", na.action="na.omit") #r=0.25 p=0.00048 ***
+cor.test(GHexp$sqrtTFC, GHexp$rankBR.T, method="pearson", na.action="na.omit") #r=0.36 p=<0.0001 ***
 cor.test(GHexp$sqrtTFC, GHexp$rankNewL.D, method="pearson", na.action="na.omit") #r= -0.065 p=0.34
 cor.test(GHexp$sqrtTFC, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.47 p=<0.0001 ***
-cor.test(GHexp$Cot.FR, GHexp$sqrtBR.T, method="pearson", na.action="na.omit") #r=0.0012 p=0.99
+cor.test(GHexp$Cot.FR, GHexp$rankBR.T, method="pearson", na.action="na.omit") #r= -0.058 p=0.43
 cor.test(GHexp$Cot.FR, GHexp$rankNewL.D, method="pearson", na.action="na.omit") #r= -0.15 p=0.039 *
 cor.test(GHexp$Cot.FR, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.084 p=0.26
-cor.test(GHexp$sqrtBR.T, GHexp$rankNewL.D, method="pearson", na.action="na.omit") #r=0.45 p=<0.0001 ***
-cor.test(GHexp$sqrtBR.T, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.25 p=0.00067 **
+cor.test(GHexp$rankBR.T, GHexp$rankNewL.D, method="pearson", na.action="na.omit") #r=0.45 p=<0.0001 ***
+cor.test(GHexp$rankBR.T, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.18 p=0.018 *
 cor.test(GHexp$rankNewL.D, GHexp$DDFLWF, method="pearson", na.action="na.omit") #r=0.077 p=0.309
 
 ggplot(data=GHexp, aes(x=sqrtTFC, y=Cot.FR, group=Zone, colour=Zone)) +
