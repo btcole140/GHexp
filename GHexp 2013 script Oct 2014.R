@@ -1747,18 +1747,18 @@ GHcfrFa <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("SSTRTMT"))
 GHcfrFb <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("DTRTMT")) 
 GHcfrFc <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("Zone")) 
 GHcfrF2 <- summarySE(GHexp, measurevar="Cot.FR", groupvars=c("SSTRTMT", "DTRTMT", "Zone")) 
-ggplot(data=GHcfrF2, aes(x=DTRTMT, y=Cot.FR, group=Zone, shape=Zone)) +
+ggplot(data=GHcfrF2, aes(x=SSTRTMT, y=Cot.FR, group=Zone, shape=Zone)) +
   geom_errorbar(aes(ymin=Cot.FR-se, ymax=Cot.FR+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
-  facet_grid(~SSTRTMT, labeller=ss_labeller) +
+  facet_grid(~DTRTMT, labeller=d_labeller) +
   scale_shape_discrete(name  ="Zone",
                        breaks=c("1", "2"),
                        labels=c("Beach", "Dune")) +
-  xlab("Density") + ylab("Stem Length(cm)") +
+  xlab("Spray Treatment") + ylab("Stem Length(cm)") +
   ggtitle("Mean Stem Length by Treatment") +
-  annotate("text", x=c(0.65, 0.65, 2.40, 2.40, 0.65, 0.65, 2.40, 2.40), 
-           y=c(22.78, 18.39, 25.47, 21.62, 19.44, 17.63, 19.57, 19.10), 
-           label=paste("n=",cfrn)) +
+  annotate("text", x=c(0.65, 2.40, 0.65, 2.40, 0.65, 2.40, 0.65, 2.40), 
+           y=c(22.78, 19.44, 25.47, 19.80, 18.39, 17.63, 21.62, 19.25), 
+           label=paste("n=",cfrn), size=5, fontface="bold") +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -1766,7 +1766,7 @@ ggplot(data=GHcfrF2, aes(x=DTRTMT, y=Cot.FR, group=Zone, shape=Zone)) +
   theme(strip.text.y = element_text(size=20, face="bold")) +
   theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
         axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
-  scale_x_discrete(labels=c("High", "Low")) +
+  scale_x_discrete(labels=c("Fresh", "Salt")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
@@ -1909,18 +1909,19 @@ GHcgrFa <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("DTRTMT"))
 GHcgrFb <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "Zone")) 
 GHcgrFc <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "Site", "Zone")) 
 GHcgrF2 <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Zone")) 
-ggplot(data=GHcgrF2, aes(x=DTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
-  geom_errorbar(aes(ymin=Cot.GR-se, ymax=Cot.GR+se), width=0.1, position=position_dodge(0.1)) +
+ggplot(data=GHcgrF2, aes(x=SSTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
+  geom_errorbar(aes(ymin=Cot.GR-se, ymax=Cot.GR+se), width=0.1, position=position_dodge(0.1))+
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
-  facet_grid(~SSTRTMT, labeller=ss_labeller) +
-  scale_shape_discrete(name  ="Zone",
+  facet_grid(~DTRTMT, labeller=d_labeller) +
+  scale_shape_manual(name  ="Zone",
                        breaks=c("1", "2"),
-                       labels=c("Beach", "Dune")) +
-  xlab("Density") + ylab("Stem Growth Rate (cm/day)") +
+                       labels=c("Beach", "Dune"), 
+                       values=c(16, 17)) +
+  xlab("Spray Treatment") + ylab("Stem Growth Rate (cm/day)") +
   ggtitle("Mean Stem GR by Treatment") +
-  annotate("text", x=c(0.65, 0.65, 2.40, 2.40, 0.65, 0.65, 2.40, 2.40), 
+  annotate("text", x=c(0.65, 2.40, 0.65, 2.40, 0.65, 2.40, 0.65, 2.40), 
            y=c(0.29, 0.18, 0.35, 0.21, 0.22, 0.14, 0.29, 0.24), 
-           label=paste("n=",cgn)) +
+           label=paste("n=",cgn), size=5, fontface="bold") +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -1928,7 +1929,7 @@ ggplot(data=GHcgrF2, aes(x=DTRTMT, y=Cot.GR, group=Zone, shape=Zone)) +
   theme(strip.text.y = element_text(size=20, face="bold")) +
   theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
         axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
-  scale_x_discrete(labels=c("High", "Low")) +
+  scale_x_discrete(labels=c("Fresh", "Salt")) +
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
@@ -2109,15 +2110,14 @@ tfCV <- (tfsd/tfmean)*100
 
 GHtfF <- summarySE(GHexp, measurevar="sqrtTFC", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 GHtfF2 <- summarySE(GHexp, measurevar="sqrtTFC", groupvars=c("SSTRTMT", "DTRTMT")) 
-ggplot(data=GHtfF2, aes(x=DTRTMT, y=sqrtTFC, group=SSTRTMT)) +
+ggplot(data=GHtfF2, aes(x=DTRTMT, y=sqrtTFC, group=SSTRTMT, shape=SSTRTMT)) +
   geom_errorbar(aes(ymin=sqrtTFC-se, ymax=sqrtTFC+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
-  facet_grid(~SSTRTMT, labeller=ss_labeller) +
   xlab("Density") + ylab(expression(bold(sqrt(Lifetime~Fitness)))) +
   ggtitle("Mean sqrt Total Fruit by Treatment") +
-  annotate("text", x=c(0.65, 0.65, 2.40, 2.40), 
+  annotate("text", x=c(0.85, 0.85, 2.25, 2.25), 
            y=c(2.32, 1.68, 2.31, 2.58), 
-           label=paste("n=",tfn)) +
+           label=paste("n=",tfn), size=5, fontface="bold") +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -2126,6 +2126,7 @@ ggplot(data=GHtfF2, aes(x=DTRTMT, y=sqrtTFC, group=SSTRTMT)) +
   theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
         axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
   scale_x_discrete(labels=c("High", "Low")) +
+  scale_shape_manual(values=c(0, 8))+
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
@@ -2304,15 +2305,14 @@ brCV <- (brsd/brmean)*100
 
 GHbrF <- summarySE(GHexp, measurevar="sqrtBR.T", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
 GHbrF2 <- summarySE(GHexp, measurevar="sqrtBR.T", groupvars=c("SSTRTMT", "DTRTMT")) 
-ggplot(data=GHbrF2, aes(x=DTRTMT, y=sqrtBR.T, group=SSTRTMT)) +
+ggplot(data=GHbrF2, aes(x=DTRTMT, y=sqrtBR.T, group=SSTRTMT, shape=SSTRTMT)) +
   geom_errorbar(aes(ymin=sqrtBR.T-se, ymax=sqrtBR.T+se), width=0.1, position=position_dodge(0.1)) +
   geom_line(position=position_dodge(0.1)) + geom_point(size=4, position=position_dodge(0.1))+
-  facet_grid(~SSTRTMT, labeller=ss_labeller) +
   xlab("Density") + ylab(expression(bold(sqrt(Total~Branches)))) +
   ggtitle("Mean sqrt Total Branches by Treatment") +
-  annotate("text", x=c(0.65, 0.65, 2.40, 2.40), 
+  annotate("text", x=c(0.85, 0.85, 2.25, 2.25), 
            y=c(1.044, 1.36, 0.77, 1.98), 
-           label=paste("n=",brn)) +
+           label=paste("n=",brn), size=5, fontface="bold") +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
@@ -2321,6 +2321,7 @@ ggplot(data=GHbrF2, aes(x=DTRTMT, y=sqrtBR.T, group=SSTRTMT)) +
   theme(axis.title.x = element_text(vjust=0.3, face="bold", size=20), 
         axis.text.x  = element_text(vjust=0.3, hjust=0.5, size=18, face="bold"))+
   scale_x_discrete(labels=c("High", "Low")) +
+  scale_shape_manual(values=c(0, 8))+
   theme(axis.title.y = element_text(vjust=1, face="bold", size=20),
         axis.text.y  = element_text(size=18, face="bold"))
 
@@ -3203,7 +3204,7 @@ ggplot(data=GHpdF2, aes(x=DTRTMT, y=PrpnPD, group=Zone, shape=Zone)) +
   ggtitle("Mean Seed Ratio by Treatment") +
   annotate("text", x=c(0.85, 2.20, 0.85, 2.20), 
            y=c(0.59, 0.502, 0.42, 0.602), 
-           label=paste("n=",ssn)) +
+           label=paste("n=",ssn), size=5, fontface="bold") +
   theme_bw() + theme(legend.justification=c(1,0), legend.position="top", 
                      legend.text=element_text(face="bold", size=18), 
                      legend.title=element_text(face="bold", size=18))+
