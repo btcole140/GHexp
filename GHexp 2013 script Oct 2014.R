@@ -1905,7 +1905,7 @@ cgCV <- (cgsd/cgmean)*100
 
 
 GHcgrF <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Site", "Zone")) 
-GHcgrFa <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("DTRTMT")) 
+GHcgrFa <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("DTRTMT", "Site")) 
 GHcgrFb <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "Zone")) 
 GHcgrFc <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "Site", "Zone")) 
 GHcgrF2 <- summarySE(GHexp, measurevar="Cot.GR", groupvars=c("SSTRTMT", "DTRTMT", "Zone")) 
